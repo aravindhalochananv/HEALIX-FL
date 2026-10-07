@@ -1,0 +1,6 @@
+level,concentration_parameter,num_clients,seed
+iid,1000.0,10,42
+mild_non_iid,100.0,10,42
+moderate_non_iid,10.0,10,42
+strong_non_iid,1.0,10,42
+extreme_non_iid,0.1,10,42

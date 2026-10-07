@@ -1,0 +1,36 @@
+PHASE 5-8 RESEARCH SUMMARY
+==========================
+
+FEDAVG VS FEDPROX
+-----------------
+       condition  fedavg_best_round  fedprox_best_round  fedavg_best_val_roc_auc  fedprox_best_val_roc_auc  fedavg_best_selected_test_roc_auc  fedprox_best_selected_test_roc_auc  best_selected_roc_auc_difference  best_selected_roc_auc_pct  fedavg_final_test_roc_auc  fedprox_final_test_roc_auc  final_roc_auc_difference  final_roc_auc_pct  fedavg_best_selected_test_f1  fedprox_best_selected_test_f1  f1_difference    f1_pct
+             iid                 20                  20                 0.665030                  0.668049                           0.652836                            0.658386                          0.005550                   0.850067                   0.652836                    0.658386                  0.005550           0.850067                      0.260401                       0.263122       0.002721  1.044980
+    mild_non_iid                 20                  20                 0.665658                  0.670381                           0.653595                            0.657451                          0.003856                   0.590041                   0.653595                    0.657451                  0.003856           0.590041                      0.258659                       0.261263       0.002604  1.006617
+moderate_non_iid                 20                  20                 0.663782                  0.668290                           0.650788                            0.656068                          0.005280                   0.811264                   0.650788                    0.656068                  0.005280           0.811264                      0.252884                       0.259657       0.006774  2.678603
+  strong_non_iid                  2                   4                 0.634980                  0.644304                           0.640971                            0.648608                          0.007637                   1.191406                   0.615866                    0.633293                  0.017427           2.829686                      0.254046                       0.247945      -0.006101 -2.401353
+ extreme_non_iid                  2                  10                 0.650789                  0.654830                           0.652043                            0.658872                          0.006830                   1.047410                   0.589400                    0.637681                  0.048281           8.191617                      0.264007                       0.268152       0.004145  1.570066
+
+HETEROGENEITY PERFORMANCE
+-------------------------
+       condition  alpha  label_divergence  feature_distance  fedavg_test_roc_auc  fedprox_test_roc_auc  fedavg_test_f1  fedprox_test_f1
+             iid 1000.0          0.000012            0.0415             0.652836              0.658386        0.260401         0.263122
+    mild_non_iid  100.0          0.000079            0.0460             0.653595              0.657451        0.258659         0.261263
+moderate_non_iid   10.0          0.000805            0.0486             0.650788              0.656068        0.252884         0.259657
+  strong_non_iid    1.0          0.052000            0.1987             0.640971              0.648608        0.254046         0.247945
+ extreme_non_iid    0.1          0.166800            1.5113             0.652043              0.658872        0.264007         0.268152
+
+INTERPRETATION AND CAVEATS
+--------------------------
+FedProx with mu=0.01 achieved higher test ROC-AUC than FedAvg in all five tested conditions under best-validation model selection.
+
+This does not establish that FedProx universally outperforms FedAvg. The result applies only to the tested experimental setup.
+
+For strong non-IID, FedProx achieved higher ROC-AUC but lower F1 than FedAvg.
+
+Extreme non-IID contains single-class or nearly single-class clients, so accuracy can be misleading. ROC-AUC, PR-AUC, F1, and client-level distributions should be considered together.
+
+Best-validation-selected results and final-round results must not be mixed when comparing methods.
+
+The later best-validation rounds observed for FedProx under strong and extreme non-IID are observations only and should not be presented as proof of a particular mechanism.
+
+Individual components such as FedAvg, FedProx, Dirichlet partitioning, SHAP, or differential privacy should not be described as novel by themselves. The research contribution should be framed around the integrated framework and its evaluation under healthcare data heterogeneity, subject to literature verification.

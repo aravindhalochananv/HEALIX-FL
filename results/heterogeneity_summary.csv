@@ -1,0 +1,6 @@
+heterogeneity_level,average_label_divergence,average_feature_distance,minimum_client_positive_rate,maximum_client_positive_rate,mean_client_samples,std_client_samples
+iid,1.2e-05,0.041489,10.69,11.69,8141.2,0.42
+mild_non_iid,7.9e-05,0.046008,9.67,12.42,8141.2,490.19
+moderate_non_iid,0.000805,0.048626,7.04,15.89,8141.2,1583.22
+strong_non_iid,0.052029,0.198691,0.26,83.37,8141.2,10024.62
+extreme_non_iid,0.166773,1.511267,0.0,100.0,8141.2,21646.33

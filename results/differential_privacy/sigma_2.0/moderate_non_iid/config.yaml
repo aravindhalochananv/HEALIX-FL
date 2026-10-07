@@ -1,0 +1,39 @@
+condition: moderate_non_iid
+description: Client-side DP with gradient clipping and Gaussian noise. Aggregation
+  uses Phase 10 adaptive weights.
+dp_local_training:
+  clipping_formula: clip(grad, max_norm=C)
+  mechanism: gradient_clipping + gaussian_noise
+  noise_formula: N(0, (sigma*C)^2)
+  privacy_setting: sigma_2.0
+evaluation:
+  best_model_selection: validation_roc_auc
+  validation_split: 0.2
+experiment: Differential Privacy
+federated:
+  aggregation: adaptive_fedavg (sample_count * quality_factor)
+  client_fraction: 1.0
+  local_epochs: 1
+  quality_lower: 0.5
+  quality_upper: 0.9
+  rounds: 20
+model:
+  architecture: MLP
+  dropout: 0.2
+  hidden_dim1: 128
+  hidden_dim2: 64
+  input_dim: 2370
+phase: '11'
+privacy:
+  accounting: NOT AVAILABLE (no compatible library in environment)
+  clipping_norm: 1.0
+  delta: 1.0e-05
+  noise_std: 2.0
+  sigma: 2.0
+training:
+  batch_size: 256
+  learning_rate: 0.001
+  loss: BCEWithLogitsLoss
+  optimizer: Adam
+  positive_weighting: negative_count/positive_count (1.0 if single-class)
+  random_seed: 42

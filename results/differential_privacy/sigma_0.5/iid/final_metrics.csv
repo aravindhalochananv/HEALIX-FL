@@ -1,0 +1,2 @@
+condition,privacy_setting,best_round,noise_multiplier,clipping_norm,noise_std,delta,trainable_clients,skipped_clients,test_loss,test_accuracy,test_precision,test_recall,test_f1_score,test_roc_auc,test_pr_auc
+iid,sigma_0.5,18,0.5,1.0,0.5,1e-05,10,0,1889.6794804350689,0.5113491205659821,0.1197106332375384,0.531924262439454,0.19543763145122148,0.521214204972409,0.11604685644614865

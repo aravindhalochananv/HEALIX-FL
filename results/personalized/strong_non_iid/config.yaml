@@ -1,0 +1,28 @@
+condition: strong_non_iid
+description: 'Simple personalization baseline: each client trains full MLP locally,
+  full models aggregated via FedAvg, personalized models kept for evaluation.'
+evaluation:
+  best_model_selection: validation_roc_auc
+  personalized_evaluation: each client's personalized model evaluated on test set
+  validation_split: 0.2
+experiment: Personalized Federated Learning Baseline
+federated:
+  aggregation: sample_count_weighted_fedavg (full model)
+  client_fraction: 1.0
+  local_epochs: 1
+  personalization: each client keeps its locally trained full model
+  rounds: 20
+model:
+  architecture: MLP
+  dropout: 0.2
+  hidden_dim1: 128
+  hidden_dim2: 64
+  input_dim: 2370
+phase: '9'
+training:
+  batch_size: 256
+  learning_rate: 0.001
+  loss: BCEWithLogitsLoss
+  optimizer: Adam
+  positive_weighting: negative_count/positive_count (1.0 if single-class)
+  random_seed: 42

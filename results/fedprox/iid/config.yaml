@@ -1,0 +1,26 @@
+condition: iid
+evaluation:
+  best_model_selection: validation_roc_auc
+  validation_split: 0.2
+experiment: FedProx
+federated:
+  aggregation: sample_count_weighted_fedavg
+  client_fraction: 1.0
+  local_epochs: 1
+  mu: 0.01
+  proximal_term: mu/2 * ||w - w_global||^2
+  rounds: 20
+model:
+  architecture: MLP
+  dropout: 0.2
+  hidden_dim1: 128
+  hidden_dim2: 64
+  input_dim: 2370
+phase: '8'
+training:
+  batch_size: 256
+  learning_rate: 0.001
+  loss: BCEWithLogitsLoss
+  optimizer: Adam
+  positive_weighting: negative_count/positive_count (1.0 if single-class)
+  random_seed: 42

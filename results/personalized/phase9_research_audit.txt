@@ -1,0 +1,377 @@
+## PHASE 9 RESEARCH AUDIT REPORT
+## HEALIX-FL: Personalized Federated Learning Baseline
+## Date: 2026-10-06
+
+---
+
+## A. OVERALL RESULT
+
+**PHASE 9 RESEARCH-READY**
+
+All verification checks passed. No critical inconsistencies found.
+
+---
+
+## B. FILE INTEGRITY
+
+**PASS**
+
+All expected files exist for all five conditions:
+
+- `results/personalized/iid/`
+- `results/personalized/mild_non_iid/`
+- `results/personalized/moderate_non_iid/`
+- `results/personalized/strong_non_iid/`
+- `results/personalized/extreme_non_iid/`
+
+Each condition contains:
+- `round_metrics.csv` (20 rounds)
+- `client_metrics.csv` (final test evaluation)
+- `client_participation.csv`
+- `client_round_metrics.csv`
+- `config.yaml`
+- `best_global_model.pt`
+- `final_global_model.pt`
+- `personalized_models/` directory
+
+Top-level summaries:
+- `personalized_summary.csv`
+- `personalized_round_metrics.csv`
+- `personalized_client_participation.csv`
+- `personalized_client_metrics.csv`
+- `personalized_best_round_summary.csv`
+
+---
+
+## C. ROUND INTEGRITY
+
+**PASS**
+
+| Condition | Rounds | Duplicate Rounds | NaN | Inf |
+|-----------|--------|------------------|-----|-----|
+| iid | 20 | 0 | 0 | 0 |
+| mild_non_iid | 20 | 0 | 0 | 0 |
+| moderate_non_iid | 20 | 0 | 0 | 0 |
+| strong_non_iid | 20 | 0 | 0 | 0 |
+| extreme_non_iid | 20 | 0 | 0 | 0 |
+
+All rounds 1–20 present exactly once. No missing rounds.
+
+---
+
+## D. CLIENT INTEGRITY
+
+**PASS**
+
+| Condition | Trainable Clients | Skipped Clients | Participation Records |
+|-----------|-------------------|------------------|----------------------|
+| iid | 10 | 0 | 200 |
+| mild_non_iid | 10 | 0 | 200 |
+| moderate_non_iid | 10 | 0 | 200 |
+| strong_non_iid | 10 | 0 | 200 |
+| extreme_non_iid | 7 | 3 | 140 |
+
+Participation counts match expected:
+- 10 clients × 20 rounds = 200 records
+- 7 clients × 20 rounds = 140 records
+
+---
+
+## E. EXTREME CLIENT HANDLING
+
+**PASS**
+
+For `extreme_non_iid`:
+- Trainable clients: 1, 2, 3, 4, 6, 7, 10
+- Skipped clients: 5, 8, 9
+
+These clients have fewer than 2 samples and were correctly excluded from training and evaluation.
+
+---
+
+## F. BEST-ROUND SELECTION
+
+**PASS**
+
+Independently calculated best rounds match stored values exactly:
+
+| Condition | Calculated Best Round | Stored Best Round | Match |
+|-----------|----------------------|-------------------|-------|
+| iid | 18 | 18 | PASS |
+| mild_non_iid | 20 | 20 | PASS |
+| moderate_non_iid | 20 | 20 | PASS |
+| strong_non_iid | 2 | 2 | PASS |
+| extreme_non_iid | 2 | 2 | PASS |
+
+Best round selection uses validation ROC-AUC only. No test metrics used for selection.
+
+---
+
+## G. TEST-SET DISCIPLINE
+
+**PASS**
+
+Confirmed from `src/federated/personalized.py`:
+- Test data is NOT evaluated during federated rounds
+- Test evaluation occurs ONLY after best validation round selection
+- Test metrics are NOT used for model selection
+- The common held-out test set is used for final evaluation only
+
+---
+
+## H. METRIC DEFINITION VERIFICATION
+
+### H.1 Validation Metric (during rounds)
+
+**Implementation:** Macro-average of per-client validation ROC-AUC
+
+```
+personalized_val_roc_auc = mean([client_1_val_roc_auc, client_2_val_roc_auc, ...])
+```
+
+For each trainable client:
+1. Load client's personalized model
+2. Evaluate on common validation set
+3. Compute client-level validation ROC-AUC
+4. Average across all trainable clients (simple mean, not sample-weighted)
+
+Standard deviation reported when >1 client.
+
+### H.2 Test Metric (final evaluation)
+
+**Implementation:** Macro-average of per-client test metrics
+
+For each trainable client:
+1. Load client's personalized model from best round
+2. Evaluate on common test set
+3. Compute client-level test metrics
+4. Average across all trainable clients (simple mean)
+
+Standard deviation reported when >1 client.
+
+### H.3 Critical Distinction
+
+**Phase 9 test metrics are MACRO-AVERAGED across client personalized models.**
+
+This is DIFFERENT from FedAvg/FedProx, which evaluate a SINGLE pooled global model on the full test set.
+
+**These metrics are NOT directly comparable without metric harmonization.**
+
+---
+
+## I. PERSONALIZATION IMPLEMENTATION
+
+**Implementation:** Full-model local personalization with FedAvg global aggregation
+
+### What Phase 9 actually does:
+1. Maintain one global MLP
+2. Each trainable client:
+   - Copies the global model
+   - Trains locally for 1 epoch on its own data
+   - Keeps the resulting model as its personalized model
+3. Aggregate all local models using sample-count weighted FedAvg to produce next global model
+4. Evaluate each personalized model on validation set
+5. Select best round based on average personalized-client validation ROC-AUC
+6. After all rounds, evaluate best-round personalized models on test set
+
+### What Phase 9 does NOT do:
+- No shared backbone/head split
+- No FedPer/FedPerAda algorithm
+- No partial aggregation
+- Full MLP parameters are updated locally and aggregated globally
+
+### Architecture:
+- Standard MLP: Linear(2370) -> ReLU -> Dropout(0.2) -> Linear(128) -> ReLU -> Dropout(0.2) -> Linear(64) -> ReLU -> Dropout(0.2) -> Linear(1)
+- Same as Phase 5–8 MLP architecture
+
+---
+
+## J. CONFIGURATION VERIFICATION
+
+**PASS**
+
+All configuration parameters match requirements:
+
+| Parameter | Expected | Actual |
+|-----------|----------|--------|
+| federated rounds | 20 | 20 |
+| local epochs | 1 | 1 |
+| client fraction | 1.0 | 1.0 |
+| learning rate | 0.001 | 0.001 |
+| batch size | 256 | 256 |
+| seed | 42 | 42 |
+| device | CPU | CPU |
+| model architecture | 2370 -> 128 -> 64 -> 1 | 2370 -> 128 -> 64 -> 1 |
+| dropout | 0.2 | 0.2 |
+
+---
+
+## K. PERSONALIZED CHECKPOINTS
+
+**PASS**
+
+| Condition | Expected Models | Actual Models |
+|-----------|-----------------|---------------|
+| iid | 10 | 10 |
+| mild_non_iid | 10 | 10 |
+| moderate_non_iid | 10 | 10 |
+| strong_non_iid | 10 | 10 |
+| extreme_non_iid | 7 | 7 |
+
+All expected client model files exist in `personalized_models/` directories.
+
+---
+
+## L. REPRODUCIBILITY ASSESSMENT
+
+**PASS**
+
+Config.yaml contains sufficient information:
+- Phase: 9
+- Experiment name
+- Model architecture (input_dim, hidden_dim1, hidden_dim2, dropout)
+- Federated parameters (rounds, local_epochs, client_fraction, aggregation)
+- Training parameters (learning_rate, batch_size, optimizer, loss, random_seed)
+- Evaluation parameters (validation_split, best_model_selection)
+
+Hard-coded values that affect reproducibility:
+- FED_ROUNDS = 20
+- LOCAL_EPOCHS = 1
+- BATCH_SIZE = 256
+- LEARNING_RATE = 0.001
+- CLIENT_FRACTION = 1.0
+- SEED = 42
+- VAL_SIZE = 0.20
+- NUM_CLIENTS = 10
+
+These are consistent with Phases 5–8.
+
+---
+
+## M. PHASE 7/8/9 COMPARISON
+
+**IMPORTANT: Metrics are NOT directly comparable without harmonization.**
+
+### Why not directly comparable:
+
+1. **FedAvg/FedProx**: Evaluate a SINGLE global model on the full test set → pooled metrics
+2. **Phase 9**: Evaluate EACH client's personalized model separately, then macro-average → client-level metrics averaged
+
+These are different evaluation methodologies. A fair comparison would require:
+- Either evaluating FedAvg/FedProx per-client and averaging
+- Or evaluating Phase 9 by pooling all client test predictions
+
+### Available data:
+
+| Condition | Phase 7 FedAvg (pooled) test_roc_auc | Phase 8 FedProx (pooled) test_roc_auc | Phase 9 Personalized (macro) test_roc_auc |
+|-----------|-------------------------------------|--------------------------------------|------------------------------------------|
+| iid | 0.6540 | 0.6532 | 0.6526 |
+| mild_non_iid | 0.6544 | 0.6545 | 0.6520 |
+| moderate_non_iid | 0.6527 | 0.6534 | 0.6481 |
+| strong_non_iid | 0.6256 | 0.6267 | 0.6402 |
+| extreme_non_iid | 0.6234 | 0.6220 | 0.6526 |
+
+**Note:** Phase 9 shows higher test ROC-AUC under strong/extreme heterogeneity, but this is comparing macro-averaged personalized metrics against pooled global metrics. Direct comparison is not valid without metric harmonization.
+
+---
+
+## N. RESULT INTERPRETATION
+
+Based ONLY on saved Phase 9 results:
+
+### N.1 Performance vs Heterogeneity
+- Validation ROC-AUC remains stable across conditions (0.635–0.662)
+- Test ROC-AUC remains stable across conditions (0.648–0.653)
+- No clear degradation as heterogeneity increases
+
+### N.2 Best Round Changes
+- iid: best at round 18 (later rounds)
+- mild_non_iid: best at round 20 (final round)
+- moderate_non_iid: best at round 20 (final round)
+- strong_non_iid: best at round 2 (early round)
+- extreme_non_iid: best at round 2 (early round)
+
+Under stronger heterogeneity, best round occurs earlier, suggesting faster convergence or earlier overfitting.
+
+### N.3 Extreme Non-IID Stability
+- Extreme non-IID shows higher validation standard deviation
+- Best round is early (round 2)
+- Validation ROC-AUC declines after round 2
+- Test F1 standard deviation is high (0.0869)
+- Suggests instability under extreme heterogeneity
+
+### N.4 Personalization Promise
+- Personalized models achieve comparable test ROC-AUC to FedAvg/FedProx
+- Under strong/extreme heterogeneity, Phase 9 shows higher test ROC-AUC (but note metric difference)
+- Personalization appears promising but requires proper comparison
+
+### N.5 Justification for Adaptive Aggregation
+- Evidence is suggestive but not conclusive
+- Early stopping in strong/extreme conditions suggests potential for adaptive methods
+- High variance in extreme non-IID suggests instability
+- Recommendation: Proceed with caution, consider adaptive aggregation research
+
+---
+
+## O. ISSUES REQUIRING CORRECTION
+
+**NONE**
+
+No critical inconsistencies found.
+
+Minor observations (not requiring correction):
+1. Phase 9 uses macro-averaged client metrics, while FedAvg/FedProx use pooled global metrics. This is a design choice, not a bug.
+2. The validation metric is computed as a simple mean of client ROC-AUCs, not sample-weighted. This is consistent with the personalization baseline design.
+
+---
+
+## P. FINAL RECOMMENDATION
+
+**PHASE 9 RESEARCH-READY**
+
+All verification checks passed:
+- File integrity: PASS
+- Round integrity: PASS
+- Client integrity: PASS
+- Extreme client handling: PASS
+- Best-round verification: PASS
+- Test-set discipline: PASS
+- Configuration: PASS
+- Reproducibility: PASS
+- Personalization implementation: VERIFIED
+
+The implementation is a valid full-model local personalization baseline with FedAvg global aggregation. Results are internally consistent and ready for research use.
+
+---
+
+## Q. FINAL TABLE
+
+| condition | best_round | trainable | skipped | best_val_ROC_AUC | test_ROC_AUC | test_PR_AUC | test_F1 |
+|-----------|------------|-----------|---------|------------------|--------------|-------------|---------|
+| iid | 18 | 10 | 0 | 0.6607 | 0.6526 | 0.2073 | 0.2551 |
+| mild_non_iid | 20 | 10 | 0 | 0.6623 | 0.6520 | 0.2085 | 0.2585 |
+| moderate_non_iid | 20 | 10 | 0 | 0.6589 | 0.6481 | 0.2061 | 0.2530 |
+| strong_non_iid | 2 | 10 | 0 | 0.6357 | 0.6402 | 0.1948 | 0.2436 |
+| extreme_non_iid | 2 | 7 | 3 | 0.6493 | 0.6526 | 0.2042 | 0.1932 |
+
+---
+
+## R. METRIC DEFINITION CLARIFICATION
+
+**Phase 9 test_roc_auc, test_pr_auc, test_f1 are:**
+- **MACRO-AVERAGE across trainable clients** (simple mean of per-client metrics)
+- **NOT** pooled/global test metrics
+- **NOT** sample-weighted averages
+
+This is confirmed in `src/federated/personalized.py` lines 619-624:
+```python
+avg_test_roc_auc = float(np.mean(test_roc_aucs)) if test_roc_aucs else np.nan
+avg_test_pr_auc = float(np.mean(test_pr_aucs)) if test_pr_aucs else np.nan
+avg_test_f1 = float(np.mean(test_f1s)) if test_f1s else np.nan
+```
+
+Each client's model is evaluated separately on the common test set, and the resulting per-client metrics are averaged with equal weight.
+
+---
+
+**END OF AUDIT REPORT**

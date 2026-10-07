@@ -1,0 +1,2 @@
+condition,privacy_setting,best_round,noise_multiplier,clipping_norm,noise_std,delta,trainable_clients,skipped_clients,test_loss,test_accuracy,test_precision,test_recall,test_f1_score,test_roc_auc,test_pr_auc
+iid,no_dp,20,0.0,1.0,0.0,1e-05,10,0,0.6556994010367351,0.5802790606269038,0.15927857453281183,0.6455306032584764,0.2555119825708061,0.654149345063383,0.20907164581091653

@@ -1,0 +1,13 @@
+config_output: results/centralized_config.yaml
+input_dim: 2370
+metrics_output: results/centralized_metrics.csv
+model:
+  dropout: 0.2
+  hidden_dim1: 128
+  hidden_dim2: 64
+model_output: results/centralized_model.pt
+training:
+  batch_size: 256
+  epochs: 20
+  learning_rate: 0.001
+  validation_split: 0.2

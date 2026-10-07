@@ -1,0 +1,17 @@
+HEALIX-FL Baseline Comparison Summary
+Phases 5 (Centralized), 6 (Local-only), 7 (FedAvg)
+============================================================
+
+All metrics computed on the same centralized test set (N=20,354).
+Local-only values are MEANS across clients.
+FedAvg values are FINAL round (round 20) test metrics.
+Centralized is a single model (not condition-specific); NA for non-IID conditions.
+Extreme non-IID: clients 5, 8, 9 skipped (1 sample each); 7 clients participated.
+
+FedAvg Best vs Final:
+  iid:               Final Test ROC-AUC=0.6528, Best Val ROC-AUC=0.6650, Best Round=20
+  mild_non_iid:      Final Test ROC-AUC=0.6536, Best Val ROC-AUC=0.6657, Best Round=20
+  moderate_non_iid:  Final Test ROC-AUC=0.6508, Best Val ROC-AUC=0.6638, Best Round=20
+  strong_non_iid:    Final Test ROC-AUC=0.6159, Best Val ROC-AUC=0.6350, Best Round=2
+  extreme_non_iid:   Final Test ROC-AUC=0.5894, Best Val ROC-AUC=0.6508, Best Round=2
+Note: best model selected on VALIDATION ROC-AUC, not test.

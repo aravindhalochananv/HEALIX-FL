@@ -1,0 +1,93 @@
+======================================================================
+PHASE 11: DIFFERENTIAL PRIVACY - PRIVACY AUDIT REPORT
+======================================================================
+
+1. Privacy settings completed: 4
+   - no_dp
+   - sigma_0.5
+   - sigma_1.0
+   - sigma_2.0
+2. Conditions completed: 5
+   - extreme_non_iid
+   - iid
+   - mild_non_iid
+   - moderate_non_iid
+   - strong_non_iid
+
+3. Communication rounds per run: 20
+   Local epochs per round: 1
+
+4. Client counts per run:
+   no_dp | extreme_non_iid: trainable=7, skipped=3
+   no_dp | iid: trainable=10, skipped=0
+   no_dp | mild_non_iid: trainable=10, skipped=0
+   no_dp | moderate_non_iid: trainable=10, skipped=0
+   no_dp | strong_non_iid: trainable=10, skipped=0
+   sigma_0.5 | extreme_non_iid: trainable=7, skipped=3
+   sigma_0.5 | iid: trainable=10, skipped=0
+   sigma_0.5 | mild_non_iid: trainable=10, skipped=0
+   sigma_0.5 | moderate_non_iid: trainable=10, skipped=0
+   sigma_0.5 | strong_non_iid: trainable=10, skipped=0
+   sigma_1.0 | extreme_non_iid: trainable=7, skipped=3
+   sigma_1.0 | iid: trainable=10, skipped=0
+   sigma_1.0 | mild_non_iid: trainable=10, skipped=0
+   sigma_1.0 | moderate_non_iid: trainable=10, skipped=0
+   sigma_1.0 | strong_non_iid: trainable=10, skipped=0
+   sigma_2.0 | extreme_non_iid: trainable=7, skipped=3
+   sigma_2.0 | iid: trainable=10, skipped=0
+   sigma_2.0 | mild_non_iid: trainable=10, skipped=0
+   sigma_2.0 | moderate_non_iid: trainable=10, skipped=0
+   sigma_2.0 | strong_non_iid: trainable=10, skipped=0
+
+5. NaN detected: False
+   Inf detected: False
+
+6. All adaptive weights sum to 1.0: True
+
+7. Sigma values used: [0.0, 0.5, 1.0, 2.0]
+
+8. Noise disabled for sigma=0.0: True
+9. Noise enabled for sigma>0.0: True
+
+10. Gradient clipping applied: True
+11. Best checkpoint selected using validation ROC-AUC: True
+12. Final test evaluation occurs after model selection: True
+13. Test metrics not used for aggregation or selection: True
+14. Formal epsilon claimed: False
+    Privacy accounting: NOT AVAILABLE (no compatible library in environment)
+    Delta: 1e-05
+
+15. Phase 1-10 files unchanged: True
+    Only new files added: src/__init__.py, src/federated/differential_privacy.py
+
+16. Sanity test outputs intact: True
+
+======================================================================
+SUMMARY TABLE
+======================================================================
+Privacy      Condition            Best Round Best Val ROC-AUC Test ROC-AUC  Test PR-AUC    Test F1
+------------------------------------------------------------------------------------------
+no_dp        extreme_non_iid               2           0.6511       0.6553       0.2060     0.2687
+no_dp        iid                          20           0.6642       0.6541       0.2091     0.2555
+no_dp        mild_non_iid                 20           0.6665       0.6534       0.2090     0.2623
+no_dp        moderate_non_iid             20           0.6634       0.6503       0.2078     0.2544
+no_dp        strong_non_iid                3           0.6335       0.6382       0.1958     0.2469
+sigma_0.5    extreme_non_iid              12           0.5281       0.5184       0.1154     0.1967
+sigma_0.5    iid                          18           0.5269       0.5212       0.1160     0.1954
+sigma_0.5    mild_non_iid                  4           0.5596       0.5570       0.1320     0.2086
+sigma_0.5    moderate_non_iid             20           0.5247       0.5223       0.1163     0.2040
+sigma_0.5    strong_non_iid                6           0.5448       0.5482       0.1238     0.2095
+sigma_1.0    extreme_non_iid               9           0.5410       0.5363       0.1209     0.1911
+sigma_1.0    iid                          16           0.5401       0.5355       0.1197     0.2019
+sigma_1.0    mild_non_iid                 10           0.5304       0.5326       0.1190     0.1992
+sigma_1.0    moderate_non_iid              3           0.5441       0.5398       0.1247     0.1770
+sigma_1.0    strong_non_iid                1           0.5389       0.5350       0.1200     0.1982
+sigma_2.0    extreme_non_iid              15           0.5229       0.5192       0.1175     0.1225
+sigma_2.0    iid                          18           0.5357       0.5290       0.1180     0.1991
+sigma_2.0    mild_non_iid                  7           0.5341       0.5469       0.1231     0.2094
+sigma_2.0    moderate_non_iid              7           0.5465       0.5517       0.1245     0.2141
+sigma_2.0    strong_non_iid                9           0.5361       0.5288       0.1195     0.1673
+
+======================================================================
+AUDIT COMPLETE
+======================================================================

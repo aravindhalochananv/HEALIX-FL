@@ -1,0 +1,76 @@
+project:
+  name: HEALIX-FL
+  title: "HEALIX-FL: A Heterogeneity-Aware and Explainable Federated Learning Framework for Privacy-Preserving Healthcare Prediction"
+  random_seed: 42
+
+paths:
+  raw_data: "data/raw/diabetic_data.csv"
+  processed_data: "data/processed/"
+  clients_data: "data/clients/"
+  results: "results/"
+  notebooks: "notebooks/"
+
+dataset:
+  target_column: "readmitted"
+  missing_value_indicator: "?"
+  id_columns:
+    - "encounter_id"
+    - "patient_nbr"
+
+phase1:
+  audit:
+    output_csv: "results/data_audit.csv"
+    high_missing_threshold: 0.5
+    duplicate_check: true
+
+phase3:
+  federated:
+    num_clients: 10
+    random_seed: 42
+    iid:
+      output_dir: "data/clients/iid/"
+      distribution_csv: "results/iid_client_distribution.csv"
+      sample_distribution_plot: "results/iid_client_sample_distribution.png"
+      target_distribution_plot: "results/iid_client_target_distribution.png"
+
+phase4:
+  non_iid:
+    num_clients: 10
+    random_seed: 42
+    levels:
+      - "iid"
+      - "mild_non_iid"
+      - "moderate_non_iid"
+      - "strong_non_iid"
+      - "extreme_non_iid"
+    alpha_map:
+      iid: 1000.0
+      mild_non_iid: 100.0
+      moderate_non_iid: 10.0
+      strong_non_iid: 1.0
+      extreme_non_iid: 0.1
+    output_base_dir: "data/clients/non_iid/"
+    distribution_csv: "results/non_iid_client_distribution.csv"
+    summary_csv: "results/heterogeneity_summary.csv"
+    config_csv: "results/heterogeneity_config.csv"
+    plots:
+      target_distribution: "results/non_iid_target_distribution.png"
+      label_divergence: "results/client_label_divergence.png"
+      feature_distance: "results/client_feature_distance.png"
+      similarity_heatmap: "results/client_similarity_heatmap.png"
+
+phase5:
+  centralized:
+    input_dim: 2370
+    model:
+      hidden_dim1: 128
+      hidden_dim2: 64
+      dropout: 0.2
+    training:
+      learning_rate: 0.001
+      batch_size: 256
+      epochs: 20
+      validation_split: 0.2
+    model_output: "results/centralized_model.pt"
+    metrics_output: "results/centralized_metrics.csv"
+    config_output: "results/centralized_config.yaml"

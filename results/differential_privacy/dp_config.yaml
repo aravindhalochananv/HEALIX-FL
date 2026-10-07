@@ -1,0 +1,28 @@
+accounting: NOT AVAILABLE
+clipping_norm: 1.0
+conditions:
+- iid
+- mild_non_iid
+- moderate_non_iid
+- strong_non_iid
+- extreme_non_iid
+delta: 1.0e-05
+experiment: Differential Privacy
+federated:
+  client_fraction: 1.0
+  local_epochs: 1
+  rounds: 20
+phase: '11'
+privacy_settings:
+- name: no_dp
+  sigma: 0.0
+- name: sigma_0.5
+  sigma: 0.5
+- name: sigma_1.0
+  sigma: 1.0
+- name: sigma_2.0
+  sigma: 2.0
+training:
+  batch_size: 256
+  learning_rate: 0.001
+  random_seed: 42

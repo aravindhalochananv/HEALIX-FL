@@ -1,0 +1,30 @@
+condition: iid
+description: Sample-count-weighted FedAvg augmented with client-quality factor from
+  local validation ROC-AUC. Base weight = n_k / sum(n_j). Quality = clip(validation_roc_auc_k,
+  0.5, 0.9). Normalized quality = quality_k / mean(quality_j). Adaptive weight = base_weight
+  * normalized_quality.
+evaluation:
+  best_model_selection: validation_roc_auc
+  validation_split: 0.2
+experiment: Adaptive Aggregation
+federated:
+  aggregation: adaptive_fedavg (sample_count * quality_factor)
+  client_fraction: 1.0
+  local_epochs: 1
+  quality_lower: 0.5
+  quality_upper: 0.9
+  rounds: 20
+model:
+  architecture: MLP
+  dropout: 0.2
+  hidden_dim1: 128
+  hidden_dim2: 64
+  input_dim: 2370
+phase: '10'
+training:
+  batch_size: 256
+  learning_rate: 0.001
+  loss: BCEWithLogitsLoss
+  optimizer: Adam
+  positive_weighting: negative_count/positive_count (1.0 if single-class)
+  random_seed: 42
