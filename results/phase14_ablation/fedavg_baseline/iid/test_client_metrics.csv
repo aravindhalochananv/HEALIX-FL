@@ -1,0 +1,2 @@
+ablation,heterogeneity,client,test_loss,test_accuracy,test_precision,test_recall,test_f1_score,test_roc_auc,test_pr_auc,test_tp,test_tn,test_fp,test_fn
+fedavg_baseline,iid,global,0.6593876419676958,0.5832268841505355,0.1604722343681679,0.646411272567151,0.2571153340923023,0.6537740512685122,0.20894306482777691,1468,10403,7680,803

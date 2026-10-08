@@ -1,0 +1,25 @@
+{
+  "phase": 12,
+  "shap_version": "0.52.0",
+  "python_version": "3.14.6 (tags/v3.14.6:c63aec6, Jun 10 2026, 10:26:10) [MSC v.1944 64 bit (AMD64)]",
+  "torch_version": "2.14.0+cpu",
+  "numpy_version": "2.5.3",
+  "random_seed": 42,
+  "background_size": 50,
+  "explanation_size": 100,
+  "n_features": 2370,
+  "total_test_samples": 20354,
+  "explainer": "shap.GradientExplainer",
+  "models_explained": [
+    "centralized",
+    "fedavg",
+    "fedprox",
+    "personalized",
+    "adaptive",
+    "dp_no_dp",
+    "dp_sigma_0.5",
+    "dp_sigma_1.0",
+    "dp_sigma_2.0"
+  ],
+  "primary_model": "personalized"
+}

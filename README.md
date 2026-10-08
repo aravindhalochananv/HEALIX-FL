@@ -12,7 +12,7 @@ HEALIX-FL is a research framework for federated learning in healthcare settings.
 
 2. **Privacy Preservation:** The framework implements client-side differential privacy with gradient clipping and Gaussian noise, allowing measurement of the privacy–utility trade-off without sharing raw patient data.
 
-3. **Explainability Requirement:** Healthcare models must be interpretable. HEALIX-FL is designed to integrate explainability methods (SHAP, efficient explanations) in later phases.
+3. **Explainability Requirement:** Healthcare models must be interpretable. HEALIX-FL integrates SHAP explainability (global and local feature attribution), efficient explainability, and provides a Streamlit prediction dashboard for manual patient-level predictions with SHAP explanations.
 
 The project is implemented as a phased experimental pipeline. Each phase builds on the previous ones, with clear separation between data preparation, baseline training, federated algorithms, personalization, adaptive aggregation, and differential privacy.
 
@@ -60,6 +60,10 @@ HEALIX-FL systematically investigates these challenges through controlled experi
 | **Personalization** | Full-model local fine-tuning on top of global model |
 | **Adaptive Aggregation** | Quality-weighted aggregation using validation ROC-AUC |
 | **Differential Privacy** | Client-side gradient clipping + Gaussian noise mechanism |
+| **SHAP Explainability** | Phase 12: global and local SHAP feature attribution across trained models |
+| **Efficient Explainability** | Phase 13: reduced-sample explanations evaluated against the baseline explainer (top-10 overlap, Spearman correlation) |
+| **Phase 14 Ablation Study** | 2×2×2 factorial ablation of FedProx, adaptive aggregation and personalization across 5 heterogeneity conditions |
+| **Streamlit Prediction Dashboard** | Manual patient input → model-predicted readmission probability, LOW/HIGH risk classification (threshold 0.5), and local SHAP explanation |
 
 ---
 
@@ -78,14 +82,14 @@ HEALIX-FL systematically investigates these challenges through controlled experi
 - Phase 9 — Personalization
 - Phase 10 — Adaptive Aggregation
 - Phase 11 — Differential Privacy
-
-**PLANNED:**
-
 - Phase 12 — SHAP Explainability
 - Phase 13 — Efficient Explainability
 - Phase 14 — Ablation Study
+- Streamlit Prediction Dashboard (validated)
+
+**PLANNED:**
+
 - Phase 15 — Final Evaluation and Reproducibility
-- Dashboard Development
 
 ---
 
@@ -146,7 +150,13 @@ Phase 10: Adaptive aggregation (sample-count × validation quality)
     ↓
 Phase 11: Differential privacy (gradient clipping + Gaussian noise)
     ↓
-Phase 12–15: Explainability, ablation, final evaluation (planned)
+Phase 12: SHAP explainability (global + local)
+    ↓
+Phase 13: Efficient explainability
+    ↓
+Phase 14: Ablation study (2×2×2 factorial, 5 heterogeneity conditions)
+    ↓
+Phase 15: Final evaluation (planned)
 ```
 
 ---
@@ -265,6 +275,9 @@ PYTHON PROJECT/
 ├── config.yaml
 ├── main.py
 │
+├── dashboard/
+│   └── app.py                             # Streamlit prediction dashboard
+│
 ├── data/
 │   ├── raw/
 │   │   └── diabetic_data.csv          # NOT in Git (see .gitignore)
@@ -316,6 +329,10 @@ PYTHON PROJECT/
 │   ├── personalized/
 │   ├── adaptive_aggregation/
 │   ├── differential_privacy/
+│   ├── shap/                              # Phase 12–13 SHAP results
+│   ├── phase14_ablation/                  # Phase 14 experiment outputs
+│   ├── phase14_analysis/                  # Phase 14 report CSVs and figures
+│   ├── prediction/                        # dashboard SHAP plots
 │   ├── phase4_plots/
 │   ├── data_audit.csv
 │   ├── heterogeneity_summary.csv
@@ -323,6 +340,11 @@ PYTHON PROJECT/
 │
 ├── reports/
 │   ├── PHASE_1_11_RESEARCH_PROGRESS_REPORT.md
+│   ├── PHASE_12_SHAP_EXPLAINABILITY_REPORT.md
+│   ├── PHASE_13_EFFICIENT_EXPLAINABILITY_REPORT.md
+│   ├── phase14/
+│   │   └── PHASE_14_ABLATION_REPORT.md
+│   ├── dataset_audit/
 │   ├── figures/
 │   └── tables/
 │
@@ -399,6 +421,23 @@ python main.py 9
 
 ---
 
+## Streamlit Prediction Dashboard
+
+The validated dashboard in `dashboard/app.py` allows entering a patient's values manually and sending them through the EXISTING HEALIX-FL preprocessing pipeline and trained model. It produces:
+
+- a **model-predicted readmission probability** (displayed as a percentage),
+- a **LOW RISK / HIGH RISK classification** using the project threshold of 0.5,
+- a **local SHAP explanation** showing which features contributed to the prediction.
+
+The dashboard also displays the existing Phase 12, Phase 13 and Phase 14 research results. It does not retrain the model and does not re-run any experiment.
+
+```bash
+# Launch the dashboard
+python -m streamlit run dashboard/app.py
+```
+
+---
+
 ## Reproducibility
 
 - **Random seed:** 42 (fixed across all phases)
@@ -406,7 +445,7 @@ python main.py 9
 - **Model selection:** Best checkpoint selected using validation ROC-AUC only
 - **Test evaluation:** Performed once after best round identification; test metrics never influence training or selection
 - **Results:** All experiment outputs saved to `results/` as CSV, YAML, and PyTorch model files
-- **Report:** Detailed Phase 1–11 results in `reports/PHASE_1_11_RESEARCH_PROGRESS_REPORT.md`
+- **Reports:** Phase 1–11 in `reports/PHASE_1_11_RESEARCH_PROGRESS_REPORT.md`; Phase 12 in `reports/PHASE_12_SHAP_EXPLAINABILITY_REPORT.md`; Phase 13 in `reports/PHASE_13_EFFICIENT_EXPLAINABILITY_REPORT.md`; Phase 14 in `reports/phase14/PHASE_14_ABLATION_REPORT.md`
 
 ---
 
@@ -443,10 +482,11 @@ This is a research and academic framework. It is not intended for clinical diagn
 | 9 | Personalization | ✅ Completed |
 | 10 | Adaptive Aggregation | ✅ Completed |
 | 11 | Differential Privacy | ✅ Completed |
-| 12 | SHAP Explainability | 🔄 Planned |
-| 13 | Efficient Explainability | 🔄 Planned |
-| 14 | Ablation Study | 🔄 Planned |
+| 12 | SHAP Explainability | ✅ Completed |
+| 13 | Efficient Explainability | ✅ Completed |
+| 14 | Ablation Study | ✅ Completed |
 | 15 | Final Evaluation | 🔄 Planned |
+| — | Streamlit Prediction Dashboard | ✅ Completed |
 
 ---
 

@@ -1,0 +1,68 @@
+{
+  "phase": 14,
+  "experiment": "2x2x2 factorial ablation study",
+  "seed": 42,
+  "num_ablation_configurations": 8,
+  "num_heterogeneity_levels": 5,
+  "planned_conditions": 40,
+  "ablation_configurations": [
+    {
+      "name": "fedavg_baseline",
+      "proximal": false,
+      "adaptive": false,
+      "personalized": false
+    },
+    {
+      "name": "fedprox_only",
+      "proximal": true,
+      "adaptive": false,
+      "personalized": false
+    },
+    {
+      "name": "adaptive_only",
+      "proximal": false,
+      "adaptive": true,
+      "personalized": false
+    },
+    {
+      "name": "fedprox_adaptive",
+      "proximal": true,
+      "adaptive": true,
+      "personalized": false
+    },
+    {
+      "name": "personalized_only",
+      "proximal": false,
+      "adaptive": false,
+      "personalized": true
+    },
+    {
+      "name": "fedprox_personalized",
+      "proximal": true,
+      "adaptive": false,
+      "personalized": true
+    },
+    {
+      "name": "adaptive_personalized",
+      "proximal": false,
+      "adaptive": true,
+      "personalized": true
+    },
+    {
+      "name": "full_healix",
+      "proximal": true,
+      "adaptive": true,
+      "personalized": true
+    }
+  ],
+  "heterogeneity_conditions": [
+    "iid",
+    "mild_non_iid",
+    "moderate_non_iid",
+    "strong_non_iid",
+    "extreme_non_iid"
+  ],
+  "test_used_inside_training_loop": false,
+  "test_evaluation_policy": "after best validation round is frozen",
+  "total_runtime_seconds": 5260.379501600051
+}

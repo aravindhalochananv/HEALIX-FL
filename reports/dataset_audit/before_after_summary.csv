@@ -1,0 +1,16 @@
+property,before,after
+rows,101766,101766
+columns/features,50,2370
+numerical_features,11,11
+categorical_features,37,2359
+missing_values,374017,0
+duplicate_rows,0,0
+target,readmitted,target
+target_classes,3,2
+class_0_count,90409,90409
+class_1_count,11357,11357
+identifier_columns,present,removed
+constant_columns,"examide,citoglipton",one-hot encoded (single category)
+scaling,None,StandardScaler (numerical only)
+encoding,None,OneHotEncoder(handle_unknown=ignore)
+final_feature_count,50,2370

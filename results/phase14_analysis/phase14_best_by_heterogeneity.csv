@@ -1,0 +1,6 @@
+heterogeneity,best_configuration,test_roc_auc,test_pr_auc
+iid,fedprox_adaptive,0.658984,0.211675
+mild_non_iid,fedprox_adaptive,0.658647,0.211295
+moderate_non_iid,fedprox_only,0.656799,0.210325
+strong_non_iid,fedprox_personalized,0.648231,0.201796
+extreme_non_iid,fedprox_only,0.656024,0.209981

@@ -1,0 +1,2 @@
+ablation,heterogeneity,client,test_loss,test_accuracy,test_precision,test_recall,test_f1_score,test_roc_auc,test_pr_auc,test_tp,test_tn,test_fp,test_fn
+fedprox_adaptive,strong_non_iid,global,0.6242130925100843,0.6489633487275228,0.16771202617943823,0.5416116248348745,0.25611660593440916,0.6477421872863602,0.20266041140539276,1230,11979,6104,1041

@@ -1,0 +1,37 @@
+{
+  "phase": 13,
+  "description": "Efficient SHAP explainability",
+  "primary_model": "personalized",
+  "random_seed": 42,
+  "n_features": 2370,
+  "n_test_samples": 20354,
+  "explainer": "shap.GradientExplainer",
+  "shap_version": "0.52.0",
+  "phase12_baseline": {
+    "background_samples": 50,
+    "explanation_samples": 100
+  },
+  "configurations": [
+    {
+      "condition": "baseline",
+      "background_samples": 50,
+      "explanation_samples": 100
+    },
+    {
+      "condition": "efficient_1",
+      "background_samples": 25,
+      "explanation_samples": 50
+    },
+    {
+      "condition": "efficient_2",
+      "background_samples": 10,
+      "explanation_samples": 50
+    },
+    {
+      "condition": "efficient_3",
+      "background_samples": 10,
+      "explanation_samples": 25
+    }
+  ],
+  "model_metadata": {}
+}

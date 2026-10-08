@@ -1,0 +1,27 @@
+phase: 14
+experiment: 2x2x2 factorial ablation study
+ablation: fedprox_only
+heterogeneity: extreme_non_iid
+proximal: true
+adaptive:
+  quality_lower: 0.5
+  quality_upper: 0.9
+  quality_source: local_state_centralized_validation_roc_auc
+personalized: false
+model:
+  architecture: MLP
+  input_dim: 2370
+  hidden_dim1: 128
+  hidden_dim2: 64
+  dropout: 0.2
+federated:
+  rounds: 20
+  local_epochs: 1
+  batch_size: 256
+  learning_rate: 0.001
+  client_fraction: 1.0
+  num_clients: 10
+  fedprox_mu: 0.01
+selection: global_validation_roc_auc
+test_policy: test evaluation only after best round is frozen
+random_seed: 42

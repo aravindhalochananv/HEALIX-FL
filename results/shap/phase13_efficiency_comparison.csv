@@ -1,0 +1,5 @@
+condition,model,background_samples,explanation_samples,runtime_seconds,top10_overlap_count,top10_overlap_percentage,spearman_rank_correlation,mean_absolute_shap_difference,explanation_fraction_of_baseline,background_fraction_of_baseline,explanation_reduction_percentage,background_reduction_percentage
+baseline,personalized,50,100,3.4,10,100.0,0.999997,2.9e-05,1.0,1.0,0.0,0.0
+efficient_1,personalized,25,50,1.71,7,70.0,0.85465,0.000474,0.5,0.5,50.0,50.0
+efficient_2,personalized,10,50,1.73,8,80.0,0.818048,0.000696,0.5,0.2,50.0,80.0
+efficient_3,personalized,10,25,0.83,6,60.0,0.76432,0.000821,0.25,0.2,75.0,80.0
