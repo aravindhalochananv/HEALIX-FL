@@ -41,9 +41,12 @@ import streamlit as st
 
 st.set_page_config(
     page_title="HEALIX-FL Dashboard",
-    page_icon="\U0001fa7a",
+    page_icon="🧬",
     layout="wide",
     initial_sidebar_state="expanded",
+    menu_items={
+        'About': "HEALIX-FL: Heterogeneity-Aware and Explainable Federated Learning Framework for Hospital Readmission Prediction"
+    }
 )
 
 # Existing validated prediction module (never modified by the dashboard).
@@ -299,73 +302,120 @@ def require_csv(relative_path, dataframe):
 # ---------------------------------------------------------------------------
 def render_sidebar():
     with st.sidebar:
-        st.title("HEALIX-FL")
-        st.caption("Heterogeneity-Aware and Explainable Federated Learning Framework")
+        st.markdown(
+            """
+            <div style="text-align: center; padding: 1.5rem 0 1rem 0;">
+                <h1 style="background: linear-gradient(135deg, #3B82F6 0%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.25rem; font-weight: 800; margin: 0; letter-spacing: -0.025em;">HEALIX-FL</h1>
+                <p style="color: #94A3B8; font-size: 0.8rem; margin: 0.5rem 0 0 0; font-weight: 500; letter-spacing: 0.025em; text-transform: uppercase;">Heterogeneity-Aware & Explainable FL</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.divider()
+        st.markdown(
+            '<p style="font-size: 0.875rem; font-weight: 600; color: #E2E8F0; margin-bottom: 0.75rem;">🧭 Navigation</p>',
+            unsafe_allow_html=True,
+        )
         st.radio("Navigation", PAGES, key="nav_page", label_visibility="collapsed")
         st.divider()
-        st.caption("HEALIX-FL | MSc AIML Research Project")
+        st.markdown(
+            """
+            <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(129, 140, 248, 0.1) 100%); padding: 1rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); backdrop-filter: blur(10px);">
+                <p style="font-size: 0.8125rem; color: #E2E8F0; margin: 0; line-height: 1.5;">
+                    <span style="font-size: 1.25rem; vertical-align: middle;">🛡️</span> 
+                    <span style="margin-left: 0.5rem;">Read-only dashboard using validated models & research results</span>
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.divider()
+        st.markdown(
+            '<p style="text-align: center; color: #64748B; font-size: 0.75rem; font-weight: 500;">HEALIX-FL | MSc AIML Research Project</p>',
+            unsafe_allow_html=True,
+        )
 
 
 def render_footer():
     st.divider()
-    st.caption("HEALIX-FL | MSc AIML Research Project")
+    st.markdown(
+        '<p style="text-align: center; color: #64748B; font-size: 0.8rem;">🧬 HEALIX-FL | Heterogeneity-Aware and Explainable Federated Learning Framework | MSc AIML Research Project</p>',
+        unsafe_allow_html=True,
+    )
 
 
 # ---------------------------------------------------------------------------
 # Page 1 - Home / Overview
 # ---------------------------------------------------------------------------
 def page_home():
-    st.title("HEALIX-FL")
-    st.subheader("Heterogeneity-Aware and Explainable Federated Learning Framework")
     st.markdown(
-        "This dashboard demonstrates the HEALIX-FL research project: a federated "
-        "learning framework for hospital readmission prediction that is "
-        "**heterogeneity-aware**, **privacy-preserving** and **explainable**."
+        """
+        <div style="text-align: center; padding: 2rem 0 3rem 0;">
+            <h1 class="hero-title">HEALIX-FL</h1>
+            <p class="hero-subtitle">Heterogeneity-Aware and Explainable Federated Learning for Hospital Readmission Prediction</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
-    left, right = st.columns(2)
-    with left:
-        st.markdown("#### Problem being addressed")
+    st.markdown(
+        """
+        <div class="section-header">Key Features</div>
+        """,
+        unsafe_allow_html=True,
+    )
+    
+    f1, f2, f3 = st.columns(3)
+    with f1:
         st.markdown(
-            "Hospital readmission prediction relies on sensitive clinical data that "
-            "cannot always be pooled into one central database. The project trains a "
-            "readmission prediction model across multiple hospital clients while the "
-            "raw patient records stay on each client."
+            """
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-title">Patient Risk Prediction</div>
+                <div class="feature-desc">Enter patient data and get instant readmission risk assessment with confidence scores.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
-        st.markdown("#### Federated learning")
+    with f2:
         st.markdown(
-            "Instead of moving data to a central server, every client trains on its "
-            "own local data and shares only model updates. The server aggregates the "
-            "updates into a global model that is then evaluated on held-out data."
+            """
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <div class="feature-title">Explainable AI with SHAP</div>
+                <div class="feature-desc">Understand which features drive predictions with transparent, interpretable explanations.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
-        st.markdown("#### Data heterogeneity / non-IID data")
+    with f3:
         st.markdown(
-            "Hospital populations differ, so client data are rarely identically "
-            "distributed (non-IID). The experiments cover five heterogeneity "
-            "conditions, from **IID** to **extreme non-IID**."
+            """
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Research Analytics</div>
+                <div class="feature-desc">Explore comprehensive research results across phases, ablations, and heterogeneity settings.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
-    with right:
-        st.markdown("#### Privacy")
-        st.markdown(
-            "Raw patient data never leave the client; only model updates are shared. "
-            "The Phase 12 explainability results additionally include "
-            "differential-privacy conditions (`dp_no_dp`, `dp_sigma_0.5`, "
-            "`dp_sigma_1.0`, `dp_sigma_2.0`)."
-        )
-        st.markdown("#### Explainability")
-        st.markdown(
-            "SHAP explanations (Phase 12) show which features drive predictions, "
-            "globally and locally. Phase 13 studies efficient explanations: smaller "
-            "background and explanation samples with high rank agreement to the "
-            "baseline explainer."
-        )
-        st.markdown("#### Objective of HEALIX-FL")
-        st.markdown(
-            "Combine heterogeneity-aware federated learning with explainable AI so "
-            "that a readmission prediction model stays effective across non-IID "
-            "client settings, is private by design, and is transparent enough to "
-            "inspect feature by feature."
-        )
+
+    st.subheader("Project Overview")
+    col1, col2 = st.columns(2)
+    with col1:
+        with st.container(border=True):
+            st.markdown("#### Problem Statement")
+            st.markdown(
+                "Hospital readmission prediction using sensitive patient data. "
+                "Federated learning enables collaboration while preserving privacy."
+            )
+    with col2:
+        with st.container(border=True):
+            st.markdown("#### Our Approach")
+            st.markdown(
+                "HEALIX-FL combines heterogeneity-aware federated learning with "
+                "SHAP explainability to ensure transparency and effectiveness."
+            )
 
     st.subheader("Dataset")
     d1, d2, d3, d4 = st.columns(4)
@@ -378,40 +428,34 @@ def page_home():
         "(data/raw/diabetic_data.csv, 101,766 records)."
     )
 
-    st.subheader("Framework components")
-    st.markdown(
-        "- **Federated Learning** - collaborative training across hospital clients "
-        "without sharing raw patient data.\n"
-        "- **FedProx** - proximal regularization that stabilizes training under "
-        "heterogeneous (non-IID) client data.\n"
-        "- **Adaptive Aggregation** - server-side aggregation weighted by client "
-        "contributions.\n"
-        "- **Personalization** - client-specific models adapted to each hospital's "
-        "local data distribution.\n"
-        "- **Explainable AI / SHAP** - global and local feature attributions "
-        "(Phase 12).\n"
-        "- **Efficient Explainability** - reduced-cost SHAP explanations with high "
-        "agreement to the baseline (Phase 13)."
-    )
+    st.subheader("Key Concepts")
+    with st.container(border=True):
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("**🔐 Privacy-Preserving** - Raw data never leaves hospital clients")
+            st.markdown("**🌐 Federated Learning** - Collaborative training without data sharing")
+            st.markdown("**⚖️ Heterogeneity-Aware** - Handles non-IID data distributions")
+        with col2:
+            st.markdown("**🧠 Explainable AI** - SHAP-based feature importance")
+            st.markdown("**🔧 Adaptive Aggregation** - Quality-weighted model updates")
+            st.markdown("**🎯 Personalized Models** - Client-specific fine-tuning")
 
-    with st.expander("How to use this dashboard"):
+    st.markdown("### How to use this dashboard")
+    with st.container(border=True):
         st.markdown(
-            "1. **Patient Prediction** - enter the 47 raw patient values (defaults "
-            "are the existing demo patient) and click *Predict Readmission*.\n"
-            "2. **SHAP Explanation** - generate the local SHAP explanation for that "
-            "same patient using the existing `explain_patient()` implementation.\n"
-            "3. **Model Performance / Heterogeneity / Ablation Study** - browse the "
-            "existing Phase 14 results.\n"
-            "4. **Explainability** - browse the existing Phase 12 and Phase 13 "
-            "SHAP results.\n\n"
-            "The dashboard only reads existing artifacts: it never retrains the "
-            "model and never re-runs Phases 1-14."
+            "1. **Patient Prediction** - Enter the 47 patient parameters to predict readmission risk.\n"
+            "2. **SHAP Explanation** - Understand which factors influenced the prediction.\n"
+            "3. **Model Performance** - Compare model performance across configurations.\n"
+            "4. **Heterogeneity** - Analyze impact of non-IID data distributions.\n"
+            "5. **Ablation Study** - Explore contributions of each component.\n"
+            "6. **Explainability** - Review global SHAP insights from research phases."
         )
 
-    st.info(
-        "All research results shown here are read from existing result files; "
-        "no experiment was re-run for this dashboard."
-    )
+    with st.container(border=True):
+        st.markdown(
+            "ℹ️ **Note:** This dashboard displays existing research results. "
+            "No model retraining or experiment re-execution occurs."
+        )
 
 # ---------------------------------------------------------------------------
 # Page 2 - Patient Prediction
@@ -420,11 +464,20 @@ def render_prediction_result(prediction):
     probability = float(prediction["probability"])
     label = str(prediction["label"])
 
-    st.subheader("Prediction result")
+    st.subheader("Prediction Result")
     c1, c2, c3 = st.columns(3)
-    c1.metric("Predicted probability", "{:.2f}%".format(probability * 100.0))
-    c2.metric("Classification threshold", "{:.2f}".format(P.THRESHOLD))
-    c3.metric("Classification", label)
+    with c1:
+        with st.container(border=True):
+            st.metric("Predicted Probability", "{:.1f}%".format(probability * 100.0))
+    with c2:
+        with st.container(border=True):
+            st.metric("Threshold", "{:.1f}".format(P.THRESHOLD))
+    with c3:
+        with st.container(border=True):
+            if label == "HIGH RISK":
+                st.metric("Risk Level", "HIGH ⚠️", delta_color="inverse")
+            else:
+                st.metric("Risk Level", "LOW ✅")
 
     st.markdown(
         "The HEALIX-FL model assigns this input patient a "
@@ -437,11 +490,11 @@ def render_prediction_result(prediction):
         "- probability **\u2265 0.5** \u2192 **HIGH RISK**"
     )
     if label == "HIGH RISK":
-        st.error("HIGH RISK - predicted probability is at or above 0.5.")
+        st.error("⚠️ **HIGH RISK** - Predicted probability is at or above the threshold.")
     else:
-        st.success("LOW RISK - predicted probability is below 0.5.")
+        st.success("✅ **LOW RISK** - Predicted probability is below the threshold.")
 
-    st.warning("This is a model prediction, not a medical diagnosis.")
+    st.caption("⚠️ This is a model prediction for research purposes, not a medical diagnosis.")
 
     with st.expander("Model internals"):
         st.write("Raw logit before sigmoid:", prediction.get("logit"))
@@ -456,14 +509,15 @@ def render_prediction_result(prediction):
 def page_predict():
     st.title("Patient Prediction")
     st.markdown(
-        "Enter the patient's values and click **Predict Readmission**. The values "
-        "go through the EXISTING HEALIX-FL preprocessing pipeline "
-        "(saved preprocessor \u2192 2,370 transformed features) and the EXISTING "
-        "trained HEALIX-FL model "
-        "(`results/phase14_ablation/full_healix/iid/best_global_model.pt`). "
-        "All 47 model input fields are shown; defaults are the existing "
-        "demonstration patient, so a prediction can be tested immediately."
+        "Get a readmission risk prediction for a patient. The model uses the existing "
+        "HEALIX-FL pipeline with validated preprocessing and training."
     )
+    
+    with st.container(border=True):
+        st.markdown(
+            "**How it works:** Input patient data → Preprocessing (2,370 features) → "
+            "Trained HEALIX-FL model → Risk classification (threshold: 0.5)"
+        )
 
     columns, numeric_columns, _categorical = get_input_schema()
     defaults = get_demo_defaults()
@@ -476,10 +530,13 @@ def page_predict():
         if key not in st.session_state:
             st.session_state[key] = defaults[col]
 
-    # Reset must be rendered BEFORE the form so the keys are updated first.
-    if st.button("Reset to demo patient defaults", key="reset_demo_button"):
-        for col in columns:
-            st.session_state["patient_" + col] = defaults[col]
+    # Reset button with better UX
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        if st.button("🔄 Reset to demo patient", key="reset_demo_button", use_container_width=True):
+            for col in columns:
+                st.session_state["patient_" + col] = defaults[col]
+            st.success("Reset to demo values")
 
     with st.form("patient_input_form"):
         for title, fields in INPUT_SECTIONS:
@@ -504,7 +561,7 @@ def page_predict():
                             key=key,
                         )
             st.divider()
-        submitted = st.form_submit_button("Predict Readmission", type="primary")
+        submitted = st.form_submit_button("🔍 Predict Readmission Risk", type="primary", use_container_width=True)
 
     if submitted:
         values = {col: st.session_state["patient_" + col] for col in columns}
@@ -542,33 +599,34 @@ def page_predict():
 def page_shap():
     st.title("SHAP Explanation")
     st.markdown(
-        "SHAP shows which features contributed to the model's prediction for the "
-        "patient predicted on the **Patient Prediction** page. The explanation is "
-        "computed by the EXISTING `explain_patient()` implementation "
-        "(shap.GradientExplainer with the same background sample style as "
-        "Phase 12) - no second SHAP implementation exists in this dashboard."
+        "Understand which features contributed to the prediction. SHAP values show "
+        "how each feature impacts the model's decision."
     )
+    with st.container(border=True):
+        st.markdown(
+            "**Interpretation:** Positive SHAP values push toward HIGH RISK, "
+            "negative values push toward LOW RISK."
+        )
 
     prediction = st.session_state.get("prediction")
     patient_df = st.session_state.get("patient_df")
     if prediction is None or patient_df is None:
-        st.info(
-            "Run a patient prediction first on the **Patient Prediction** page, "
-            "then come back here to explain it."
-        )
+        st.info("💡 Run a patient prediction first on the **Patient Prediction** page to enable SHAP explanations.")
         return
 
     p1, p2 = st.columns(2)
-    p1.metric(
-        "Predicted probability",
-        "{:.2f}%".format(float(prediction["probability"]) * 100.0),
-    )
-    p2.metric("Classification", str(prediction["label"]))
+    with p1:
+        with st.container(border=True):
+            st.metric("Predicted Probability", "{:.1f}%".format(float(prediction["probability"]) * 100.0))
+    with p2:
+        with st.container(border=True):
+            st.metric("Risk Level", str(prediction["label"]))
 
     if st.button(
-        "Generate SHAP explanation (top 10 features)",
+        "🔍 Generate SHAP Explanation (Top 10 Features)",
         type="primary",
         key="run_shap_button",
+        use_container_width=True,
     ):
         try:
             with st.spinner("Computing the local SHAP explanation..."):
@@ -617,22 +675,17 @@ def page_shap():
         })
     top_df = pd.DataFrame(rows)
 
-    st.subheader("Top 10 contributing features")
-    st.dataframe(top_df, hide_index=True)
+    st.subheader("Top 10 Contributing Features")
+    st.dataframe(top_df, hide_index=True, use_container_width=True)
 
-    c1, c2 = st.columns(2)
     with c1:
-        st.markdown("**Positive SHAP contribution**")
-        st.markdown(
-            "A positive SHAP value pushes the model prediction **toward the "
-            "positive class**."
-        )
+        with st.container(border=True):
+            st.markdown("**🟢 Positive Impact**")
+            st.markdown("Increases probability of high readmission risk")
     with c2:
-        st.markdown("**Negative SHAP contribution**")
-        st.markdown(
-            "A negative SHAP value pushes the model prediction **away from the "
-            "positive class**."
-        )
+        with st.container(border=True):
+            st.markdown("**🔵 Negative Impact**")
+            st.markdown("Decreases probability of high readmission risk")
 
     st.markdown("#### Contribution chart (top 10 features)")
     chart_data = top_df.set_index("feature")["shap_value"]
