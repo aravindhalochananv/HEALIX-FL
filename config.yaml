@@ -74,3 +74,21 @@ phase5:
     model_output: "results/centralized_model.pt"
     metrics_output: "results/centralized_metrics.csv"
     config_output: "results/centralized_config.yaml"
+
+phase16:
+  advanced_centralized:
+    input_dim: 2370
+    model:
+      type: "advanced_residual_mlp"
+      width: 256
+      num_blocks: 3
+      dropout: 0.25
+    training:
+      learning_rate: 0.0005
+      weight_decay: 0.0001
+      batch_size: 256
+      epochs: 30
+      validation_split: 0.2
+    model_output: "results/advanced_centralized/advanced_model.pt"
+    metrics_output: "results/advanced_centralized/advanced_metrics.csv"
+    config_output: "results/advanced_centralized/advanced_config.yaml"

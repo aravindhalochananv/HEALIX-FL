@@ -7,6 +7,7 @@ from src.data.audit import run_audit
 from src.data.preprocess import run_preprocessing
 from src.data.partition import run_phase3, run_phase4
 from src.models.train import run_phase5
+from src.models.train_advanced import run_phase16
 from src.federated.local import run_phase6, run_phase6c
 from src.federated.fedavg import run_phase7
 from src.federated.fedprox import run_phase8
@@ -239,6 +240,26 @@ def run_phase15_wrapper(config):
     run_phase15()
 
 
+def run_phase16_wrapper(config):
+    print("=" * 60)
+    print("HEALIX-FL: Phase 16 - Advanced Centralized Residual MLP")
+    print("=" * 60)
+    print()
+
+    processed_dir = config["paths"]["processed_data"]
+    if not os.path.exists(os.path.join(processed_dir, "X_train.npy")):
+        raise FileNotFoundError(
+            "Processed training data not found. Run Phase 2 first: python main.py 2"
+        )
+
+    run_phase16(config)
+
+    print()
+    print("=" * 60)
+    print("Phase 16 advanced centralized model completed successfully.")
+    print("=" * 60)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="HEALIX-FL: Heterogeneity-Aware and Explainable Federated Learning Framework"
@@ -247,8 +268,8 @@ def main():
         "phase",
         nargs="?",
         default="5",
-        choices=["1", "2", "3", "4", "5", "6", "6c", "7", "8", "9", "10", "11", "12", "13", "14", "15"],
-        help="Phase to run: '1' audit, '2' preprocessing, '3' IID clients, '4' non-IID clients, '5' centralized baseline, '6' local-only, '6c' non-IID local-only, '7' FedAvg, '8' FedProx, '9' personalization, '10' adaptive aggregation, '11' differential privacy, '12' SHAP, '13' efficient SHAP, '14' ablation, '15' final evaluation (default: 5)"
+        choices=["1", "2", "3", "4", "5", "6", "6c", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+        help="Phase to run: '1' audit, '2' preprocessing, '3' IID clients, '4' non-IID clients, '5' centralized baseline, '6' local-only, '6c' non-IID local-only, '7' FedAvg, '8' FedProx, '9' personalization, '10' adaptive aggregation, '11' differential privacy, '12' SHAP, '13' efficient SHAP, '14' ablation, '15' final evaluation, '16' advanced centralized model (default: 5)"
     )
     parser.add_argument(
         "--config",
@@ -291,6 +312,8 @@ def main():
         run_phase14_wrapper(config)
     elif args.phase == "15":
         run_phase15_wrapper(config)
+    elif args.phase == "16":
+        run_phase16_wrapper(config)
     
 
 

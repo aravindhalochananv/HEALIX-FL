@@ -9,6 +9,7 @@ import pandas as pd
 import torch
 
 from src.evaluation.metrics import calculate_metrics
+from src.models.advanced_mlp import AdvancedMLP
 from src.models.mlp import MLP
 
 
@@ -20,6 +21,10 @@ N_FEATURES = 2370
 
 MODEL_PATHS = {
     "centralized": (RESULTS_DIR / "centralized_model.pt", "metadata"),
+    "advanced_centralized": (
+        RESULTS_DIR / "advanced_centralized" / "advanced_model.pt",
+        "advanced_metadata",
+    ),
     "fedavg_iid": (RESULTS_DIR / "fedavg" / "iid" / "best_global_model.pt", "state"),
     "fedprox_iid": (RESULTS_DIR / "fedprox" / "iid" / "best_global_model.pt", "state"),
     "personalized_iid": (RESULTS_DIR / "personalized" / "iid" / "best_global_model.pt", "state"),
@@ -43,8 +48,18 @@ def load_test_data():
 
 
 def load_model(path, model_format):
-    model = MLP(input_dim=N_FEATURES, hidden_dim1=128, hidden_dim2=64, dropout=0.2)
     checkpoint = torch.load(path, map_location="cpu", weights_only=False)
+    if model_format == "advanced_metadata":
+        config = checkpoint.get("model_config", {})
+        model = AdvancedMLP(
+            input_dim=config.get("input_dim", N_FEATURES),
+            width=config.get("width", 256),
+            num_blocks=config.get("num_blocks", 3),
+            dropout=config.get("dropout", 0.25),
+        )
+        checkpoint = checkpoint["model_state_dict"]
+    else:
+        model = MLP(input_dim=N_FEATURES, hidden_dim1=128, hidden_dim2=64, dropout=0.2)
     if model_format == "metadata":
         checkpoint = checkpoint["model_state_dict"]
     model.load_state_dict(checkpoint)

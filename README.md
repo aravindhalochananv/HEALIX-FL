@@ -63,6 +63,7 @@ HEALIX-FL systematically investigates these challenges through controlled experi
 | **SHAP Explainability** | Phase 12: global and local SHAP feature attribution across trained models |
 | **Efficient Explainability** | Phase 13: reduced-sample explanations evaluated against the baseline explainer (top-10 overlap, Spearman correlation) |
 | **Phase 14 Ablation Study** | 2×2×2 factorial ablation of FedProx, adaptive aggregation and personalization across 5 heterogeneity conditions |
+| **Advanced Centralized Model** | Phase 16: BatchNorm residual MLP with GELU, AdamW, and a separate checkpoint for stronger tabular benchmarking |
 | **Streamlit Prediction Dashboard** | Manual patient input → model-predicted readmission probability, LOW/HIGH risk classification (threshold 0.5), and local SHAP explanation |
 
 ---
@@ -90,6 +91,7 @@ HEALIX-FL systematically investigates these challenges through controlled experi
 **COMPLETED:**
 
 - Phase 15 — Final Evaluation and Reproducibility
+- Phase 16 — Advanced Centralized Residual MLP
 
 ---
 
@@ -157,6 +159,8 @@ Phase 13: Efficient explainability
 Phase 14: Ablation study (2×2×2 factorial, 5 heterogeneity conditions)
     ↓
 Phase 15: Final evaluation (planned)
+    ↓
+Phase 16: Advanced centralized residual MLP
 ```
 
 ---
@@ -191,6 +195,18 @@ All phases use the same MLP architecture:
 - **Loss:** BCEWithLogitsLoss with positive class weighting (`pos_weight = negative_count / positive_count`)
 - **Learning rate:** 0.001
 - **Batch size:** 256
+
+Phase 16 adds an optional advanced centralized tabular model while preserving
+the original Phase 5 baseline and federated checkpoints:
+
+- **Architecture:** Residual fully connected MLP
+- **Width:** 256 units
+- **Residual blocks:** 3
+- **Normalization:** BatchNorm1d
+- **Activation:** GELU
+- **Dropout:** 0.25
+- **Optimizer:** AdamW with weight decay
+- **Output:** Single logit, compatible with BCEWithLogitsLoss
 
 ---
 
@@ -438,6 +454,9 @@ python main.py 14
 
 # Phase 15: Final evaluation and reproducibility
 python main.py 15
+
+# Phase 16: Advanced centralized residual MLP
+python main.py 16
 ```
 
 The original module entry points remain supported for direct execution. The
@@ -508,7 +527,7 @@ python -m streamlit run dashboard/app.py
 - **Class Imbalance:** The readmission target is highly imbalanced (~11% positive), limiting maximum F1 and precision.
 - **Extreme Non-IID:** Some clients in the extreme condition have insufficient or single-class data and must be skipped.
 - **Single Dataset:** Results are based on one dataset; generalization to other healthcare tasks is not established.
-- **MLP Baseline:** A single architecture is used; more advanced models are not explored.
+- **Advanced Model Scope:** Phase 16 adds an advanced centralized neural baseline, but the federated phases still use the original MLP unless explicitly extended.
 - **No Formal Privacy Accountant:** Phase 11 implements a heuristic DP mechanism but does not provide a provable (ε, δ)-DP guarantee.
 - **Personalization Metrics:** Phase 9 uses client-level macro averaging, which is not directly comparable with pooled global metrics from other phases.
 - **Single Seed:** All experiments use one random seed; variance across initializations is not quantified.
@@ -540,6 +559,7 @@ This is a research and academic framework. It is not intended for clinical diagn
 | 13 | Efficient Explainability | ✅ Completed |
 | 14 | Ablation Study | ✅ Completed |
 | 15 | Final Evaluation | ✅ Completed |
+| 16 | Advanced Centralized Residual MLP | ✅ Implemented |
 | — | Streamlit Prediction Dashboard | ✅ Completed |
 
 ---
