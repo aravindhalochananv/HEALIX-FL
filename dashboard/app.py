@@ -49,8 +49,120 @@ st.set_page_config(
     }
 )
 
+if "theme_mode" not in st.session_state:
+    st.session_state["theme_mode"] = "dark"
+
+st.markdown(
+    """
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+    :root {
+        --ink: #e8f0f7;
+        --muted: #8ea3b5;
+        --panel: rgba(17, 31, 46, .82);
+        --line: rgba(148, 183, 205, .16);
+        --cyan: #54d6c8;
+        --blue: #79a9ff;
+        --coral: #ff927d;
+    }
+    html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
+    .stApp {
+        background:
+            radial-gradient(circle at 84% 4%, rgba(84, 214, 200, .12), transparent 25rem),
+            radial-gradient(circle at 8% 20%, rgba(121, 169, 255, .10), transparent 22rem),
+            #07121d;
+        color: var(--ink);
+    }
+    [data-testid="stHeader"] { background: rgba(7, 18, 29, .7); }
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0b1b2a 0%, #08131f 100%);
+        border-right: 1px solid var(--line);
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p { color: var(--muted); }
+    [data-testid="stSidebar"] .stButton button {
+        width: 100%; text-align: left; border: 0; border-left: 2px solid transparent;
+        border-radius: 0 9px 9px 0; padding: .65rem .8rem; margin: .12rem 0;
+        background: transparent; color: #9eb2c2; font-weight: 600;
+        transition: background .18s ease, color .18s ease, border-color .18s ease;
+    }
+    [data-testid="stSidebar"] .stButton button:hover {
+        background: rgba(84, 214, 200, .08); color: #e8f0f7; border-left-color: #54d6c8;
+    }
+    [data-testid="stSidebar"] .stButton button p { color: inherit !important; }
+    .block-container { max-width: 1440px; padding: 2.6rem 4rem 4rem; }
+    h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; letter-spacing: -.035em; color: var(--ink); }
+    h1 { font-size: clamp(2.2rem, 4vw, 4.4rem) !important; line-height: 1.02; }
+    h2 { font-size: 2rem !important; margin-top: 2rem; }
+    h3 { font-size: 1.25rem !important; }
+    .hero {
+        position: relative; overflow: hidden; padding: 2.5rem 2.8rem;
+        border: 1px solid var(--line); border-radius: 28px;
+        background: linear-gradient(115deg, rgba(18, 45, 61, .96), rgba(12, 31, 48, .70));
+        box-shadow: 0 24px 70px rgba(0, 0, 0, .25);
+    }
+    .hero:after { content: ''; position: absolute; width: 270px; height: 270px; right: -80px; top: -110px; border-radius: 50%; background: rgba(84, 214, 200, .17); filter: blur(8px); }
+    .eyebrow { color: var(--cyan); font-size: .72rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+    .hero h1 { margin: .45rem 0 .7rem; position: relative; z-index: 1; }
+    .hero p { color: #b3c6d5; max-width: 700px; font-size: 1.05rem; line-height: 1.65; position: relative; z-index: 1; }
+    .hero-meta { display: flex; gap: .55rem; flex-wrap: wrap; margin-top: 1.5rem; position: relative; z-index: 1; }
+    .pill { display: inline-flex; align-items: center; gap: .4rem; padding: .42rem .75rem; border: 1px solid var(--line); border-radius: 999px; color: #c8d8e4; background: rgba(255,255,255,.04); font-size: .78rem; }
+    .pill.good:before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+    .pill.warn { border-color: rgba(255, 146, 125, .4); color: #ffc0b3; }
+    .section-kicker { color: var(--cyan); font-size: .72rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; margin: 2.2rem 0 .5rem; }
+    .feature-card, .status-card { min-height: 148px; padding: 1.35rem; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); }
+    .feature-card { transition: transform .2s ease, border-color .2s ease; }
+    .feature-card:hover { transform: translateY(-3px); border-color: rgba(84, 214, 200, .55); }
+    .feature-icon { font-size: 1.5rem; margin-bottom: .75rem; }
+    .feature-title { font-family: 'Space Grotesk'; font-weight: 700; color: var(--ink); margin-bottom: .45rem; }
+    .feature-desc { color: var(--muted); font-size: .88rem; line-height: 1.55; }
+    .status-card strong { display: block; color: var(--ink); margin-bottom: .35rem; }
+    .status-card span { color: var(--muted); font-size: .84rem; line-height: 1.45; }
+    [data-testid="stMetric"] { background: var(--panel); border: 1px solid var(--line); padding: 1rem 1.1rem; border-radius: 16px; }
+    [data-testid="stMetricLabel"] { color: var(--muted); }
+    [data-testid="stMetricValue"] { color: var(--ink); font-family: 'Space Grotesk'; }
+    div[data-testid="stVerticalBlock"] > div:has(> div.stButton) .stButton button,
+    .stButton > button[kind="primary"] { border-radius: 11px; border: 1px solid rgba(84, 214, 200, .45); background: linear-gradient(135deg, #2c9f9b, #3f78c6); color: white; font-weight: 700; }
+    .stButton > button:hover { border-color: var(--cyan); color: white; }
+    [data-testid="stDataFrame"] { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+    [data-testid="stExpander"] { border: 1px solid var(--line); border-radius: 14px; background: rgba(17, 31, 46, .5); }
+    .stCaption, [data-testid="stCaptionContainer"] { color: var(--muted); }
+    hr { border-color: var(--line); }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+if st.session_state["theme_mode"] == "light":
+    st.markdown(
+        """
+        <style>
+        .stApp { background: #f4f8fb !important; color: #102131 !important; }
+        [data-testid="stHeader"] { background: rgba(244, 248, 251, .88) !important; }
+        [data-testid="stSidebar"] { background: linear-gradient(180deg, #ffffff 0%, #edf5f7 100%) !important; border-right-color: #d5e2e8 !important; }
+        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+        .stCaption, [data-testid="stCaptionContainer"] { color: #587080 !important; }
+        h1, h2, h3, h4, [data-testid="stMetricValue"], .feature-title,
+        [data-testid="stMarkdownContainer"] { color: #102131; }
+        .hero { background: linear-gradient(115deg, #e2f4f3, #edf3fc) !important; border-color: #c9dde3 !important; box-shadow: 0 24px 70px rgba(34, 76, 94, .12) !important; }
+        .hero p, .feature-desc, .status-card span { color: #587080 !important; }
+        .pill { color: #345465 !important; border-color: #c5d9df !important; background: rgba(255,255,255,.55) !important; }
+        .feature-card, .status-card, [data-testid="stMetric"] { background: rgba(255,255,255,.82) !important; border-color: #d5e2e8 !important; }
+        [data-testid="stExpander"] { background: rgba(255,255,255,.72) !important; border-color: #d5e2e8 !important; }
+        [data-testid="stDataFrame"] { border-color: #d5e2e8 !important; }
+        [data-testid="stSidebar"] .stButton button { color: #476273 !important; }
+        [data-testid="stSidebar"] .stButton button:hover { color: #102131 !important; background: rgba(42, 157, 153, .10) !important; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 # Existing validated prediction module (never modified by the dashboard).
 from src.prediction import predict as P  # noqa: E402
+from src.operations.pilot_controls import (
+    get_pilot_status,
+    record_audit_event,
+)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -59,20 +171,24 @@ MISSING_LABEL = "(not recorded)"
 
 PAGE_HOME = "Home / Overview"
 PAGE_PREDICT = "Patient Prediction"
+PAGE_BATCH = "Batch Scoring"
 PAGE_SHAP = "SHAP Explanation"
 PAGE_PERFORMANCE = "Model Performance"
 PAGE_HETEROGENEITY = "Heterogeneity"
 PAGE_ABLATION = "Ablation Study"
 PAGE_EXPLAINABILITY = "Explainability"
+PAGE_OPERATIONS = "Pilot Operations"
 
 PAGES = [
     PAGE_HOME,
     PAGE_PREDICT,
+    PAGE_BATCH,
     PAGE_SHAP,
     PAGE_PERFORMANCE,
     PAGE_HETEROGENEITY,
     PAGE_ABLATION,
     PAGE_EXPLAINABILITY,
+    PAGE_OPERATIONS,
 ]
 
 # The 47 raw model input fields, grouped into dashboard input sections.
@@ -280,6 +396,28 @@ def build_patient_dataframe(values):
     return base
 
 
+def run_prediction_with_threshold(patient_dataframe, threshold):
+    """Run inference across old and new prediction-module signatures.
+
+    The probability is always produced by the validated inference module.
+    Thresholding is applied in the dashboard so an older cached Streamlit
+    worker cannot break the user flow after a code update.
+    """
+    if not 0.0 < threshold < 1.0:
+        raise ValueError("threshold must be between 0 and 1.")
+    prediction = P.predict_patient(patient_dataframe)
+    probabilities = np.asarray(prediction["probability"])
+    labels = np.where(probabilities >= threshold, "HIGH RISK", "LOW RISK")
+    if probabilities.ndim == 0:
+        prediction["label"] = str(labels.item())
+        prediction["prediction"] = int(probabilities.item() >= threshold)
+    else:
+        prediction["label"] = labels.tolist()
+        prediction["prediction"] = (probabilities >= threshold).astype(int)
+    prediction["threshold"] = threshold
+    return prediction
+
+
 def readable_feature_name(feature):
     """Make a transformed feature name human readable for display."""
     name = str(feature)
@@ -297,6 +435,26 @@ def require_csv(relative_path, dataframe):
         return False
     return True
 
+
+def get_runtime_status():
+    """Return explicit availability status for inference and research assets."""
+    checkpoint_ready = any(
+        os.path.exists(path)
+        for path in (
+            P.PREFERRED_CHECKPOINT_PATH,
+            P.FALLBACK_CHECKPOINT_PATH,
+        )
+    )
+    checks = {
+        "Research result bundle": os.path.exists(
+            os.path.join(P.PROJECT_ROOT, PHASE14_SUMMARY_CSV)
+        ),
+        "Saved preprocessor": os.path.exists(P.PREPROCESSOR_PATH),
+        "Raw patient dataset": os.path.exists(P.RAW_DATA_PATH),
+        "Inference checkpoint": checkpoint_ready,
+    }
+    return checks
+
 # ---------------------------------------------------------------------------
 # Sidebar navigation and footer
 # ---------------------------------------------------------------------------
@@ -304,36 +462,53 @@ def render_sidebar():
     with st.sidebar:
         st.markdown(
             """
-            <div style="text-align: center; padding: 1.5rem 0 1rem 0;">
-                <h1 style="background: linear-gradient(135deg, #3B82F6 0%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.25rem; font-weight: 800; margin: 0; letter-spacing: -0.025em;">HEALIX-FL</h1>
-                <p style="color: #94A3B8; font-size: 0.8rem; margin: 0.5rem 0 0 0; font-weight: 500; letter-spacing: 0.025em; text-transform: uppercase;">Heterogeneity-Aware & Explainable FL</p>
+            <div style="padding: 1.1rem 0 1rem;">
+                <div style="color:#54d6c8;font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;">Clinical AI lab</div>
+                <h1 style="font-family:'Space Grotesk';font-size:2rem;margin:.35rem 0;background:linear-gradient(135deg,#54d6c8,#79a9ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">HEALIX-FL</h1>
+                <p style="font-size:.78rem;line-height:1.5;margin:0;">Federated intelligence for safer readmission research</p>
             </div>
             """,
             unsafe_allow_html=True,
         )
         st.divider()
         st.markdown(
-            '<p style="font-size: 0.875rem; font-weight: 600; color: #E2E8F0; margin-bottom: 0.75rem;">🧭 Navigation</p>',
+            '<p style="font-size:.7rem;font-weight:700;color:#54d6c8;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.75rem;">Workspace</p>',
             unsafe_allow_html=True,
         )
-        st.radio("Navigation", PAGES, key="nav_page", label_visibility="collapsed")
+        current_page = st.session_state.get("nav_page", PAGE_HOME)
+        for page in PAGES:
+            label = ("●  " if page == current_page else "○  ") + page
+            if st.button(
+                label,
+                key="nav_tab_" + page,
+                use_container_width=True,
+            ):
+                st.session_state["nav_page"] = page
+                st.rerun()
         st.divider()
+        theme_label = (
+            "☀️  Switch to light mode"
+            if st.session_state["theme_mode"] == "dark"
+            else "🌙  Switch to dark mode"
+        )
+        if st.button(theme_label, key="theme_toggle", use_container_width=True):
+            st.session_state["theme_mode"] = (
+                "light" if st.session_state["theme_mode"] == "dark" else "dark"
+            )
+            st.rerun()
         st.markdown(
             """
-            <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(129, 140, 248, 0.1) 100%); padding: 1rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3); backdrop-filter: blur(10px);">
-                <p style="font-size: 0.8125rem; color: #E2E8F0; margin: 0; line-height: 1.5;">
-                    <span style="font-size: 1.25rem; vertical-align: middle;">🛡️</span> 
-                    <span style="margin-left: 0.5rem;">Read-only dashboard using validated models & research results</span>
+            <div style="background:rgba(84,214,200,.07);padding:.9rem;border-radius:14px;border:1px solid rgba(84,214,200,.22);">
+                <p style="font-size:.78rem;color:#c8d8e4;margin:0;line-height:1.55;">
+                    <span style="color:#54d6c8;">●</span>&nbsp; Research mode<br>
+                    <span style="color:#8ea3b5;">Read-only results. No experiments are re-run.</span>
                 </p>
             </div>
             """,
             unsafe_allow_html=True,
         )
         st.divider()
-        st.markdown(
-            '<p style="text-align: center; color: #64748B; font-size: 0.75rem; font-weight: 500;">HEALIX-FL | MSc AIML Research Project</p>',
-            unsafe_allow_html=True,
-        )
+        st.caption("MSc AIML research project · v1.0")
 
 
 def render_footer():
@@ -350,18 +525,22 @@ def render_footer():
 def page_home():
     st.markdown(
         """
-        <div style="text-align: center; padding: 2rem 0 3rem 0;">
-            <h1 class="hero-title">HEALIX-FL</h1>
-            <p class="hero-subtitle">Heterogeneity-Aware and Explainable Federated Learning for Hospital Readmission Prediction</p>
+        <div class="hero">
+            <div class="eyebrow">Federated clinical intelligence</div>
+            <h1>Trust the signal.<br><span style="color:#54d6c8;">Protect the patient.</span></h1>
+            <p>Explore hospital readmission prediction through privacy-preserving federated learning, explainable model decisions, and evidence from 14 research phases.</p>
+            <div class="hero-meta">
+                <span class="pill good">Research artifacts loaded</span>
+                <span class="pill">2,370 transformed features</span>
+                <span class="pill">5 heterogeneity conditions</span>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
     st.markdown(
-        """
-        <div class="section-header">Key Features</div>
-        """,
+        '<div class="section-kicker">Start here</div><h2 style="margin-top:0;">A clearer view of the research</h2>',
         unsafe_allow_html=True,
     )
     
@@ -400,7 +579,7 @@ def page_home():
             unsafe_allow_html=True,
         )
 
-    st.subheader("Project Overview")
+    st.markdown('<div class="section-kicker">Why HEALIX-FL</div><h2 style="margin-top:0;">Designed for clinical context</h2>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         with st.container(border=True):
@@ -417,7 +596,7 @@ def page_home():
                 "SHAP explainability to ensure transparency and effectiveness."
             )
 
-    st.subheader("Dataset")
+    st.markdown('<div class="section-kicker">Evidence base</div><h2 style="margin-top:0;">The numbers behind the model</h2>', unsafe_allow_html=True)
     d1, d2, d3, d4 = st.columns(4)
     d1.metric("Dataset", "Diabetes 130-US Hospitals")
     d2.metric("Dataset size", "101,766 records")
@@ -428,7 +607,43 @@ def page_home():
         "(data/raw/diabetic_data.csv, 101,766 records)."
     )
 
-    st.subheader("Key Concepts")
+    st.markdown('<div class="section-kicker">System status</div>', unsafe_allow_html=True)
+    status = get_runtime_status()
+    status_columns = st.columns(4)
+    for column, (label, available) in zip(status_columns, status.items()):
+        with column:
+            state = "Ready" if available else "Needs setup"
+            detail = "Available for this workspace" if available else "Not found in this checkout"
+            tone = "good" if available else "warn"
+            st.markdown(
+                '<div class="status-card"><strong style="color:{};">{}</strong><span>{}<br>{}</span></div>'.format(
+                    "#54d6c8" if available else "#ff927d", state, label, detail
+                ),
+                unsafe_allow_html=True,
+            )
+    if not status["Raw patient dataset"] or not status["Inference checkpoint"]:
+        st.warning(
+            "Patient prediction needs the raw UCI dataset and a compatible trained checkpoint. "
+            "The exact Phase 14 checkpoint is absent, so the dashboard will use the available "
+            "IID Adaptive Aggregation checkpoint as an explicit fallback."
+        )
+    st.markdown('<div class="section-kicker">Deployment posture</div>', unsafe_allow_html=True)
+    readiness_columns = st.columns(3)
+    readiness = [
+        ("✅", "Internal research users", "READY", "Fallback model is disclosed and outputs are downloadable."),
+        ("⚠️", "Hospital pilot", "DEMO PACKAGE COMPLETE", "Operational controls and evidence package are configured for supervised demonstration only."),
+        ("⛔", "Public / clinical decisions", "NOT READY", "External clinical validation and institutional approval are not represented by this demo mode."),
+    ]
+    for column, (icon, title, state, detail) in zip(readiness_columns, readiness):
+        with column:
+            st.markdown(
+                '<div class="status-card"><strong>{} &nbsp; {} <small style="color:#54d6c8;">{}</small></strong><span>{}</span></div>'.format(
+                    icon, title, state, detail
+                ),
+                unsafe_allow_html=True,
+            )
+
+    st.markdown('<div class="section-kicker">System principles</div><h2 style="margin-top:0;">Built around responsible collaboration</h2>', unsafe_allow_html=True)
     with st.container(border=True):
         col1, col2 = st.columns(2)
         with col1:
@@ -471,7 +686,7 @@ def render_prediction_result(prediction):
             st.metric("Predicted Probability", "{:.1f}%".format(probability * 100.0))
     with c2:
         with st.container(border=True):
-            st.metric("Threshold", "{:.1f}".format(P.THRESHOLD))
+            st.metric("Threshold", "{:.2f}".format(float(prediction.get("threshold", P.THRESHOLD))))
     with c3:
         with st.container(border=True):
             if label == "HIGH RISK":
@@ -485,9 +700,8 @@ def render_prediction_result(prediction):
         .format(probability * 100.0)
     )
     st.markdown(
-        "Classification rule (existing project threshold):\n"
-        "- probability **< 0.5** \u2192 **LOW RISK**\n"
-        "- probability **\u2265 0.5** \u2192 **HIGH RISK**"
+        "Classification uses the selected operating threshold: **{:.2f}**."
+        .format(float(prediction.get("threshold", P.THRESHOLD)))
     )
     if label == "HIGH RISK":
         st.error("⚠️ **HIGH RISK** - Predicted probability is at or above the threshold.")
@@ -519,7 +733,41 @@ def page_predict():
             "Trained HEALIX-FL model → Risk classification (threshold: 0.5)"
         )
 
+    status = get_runtime_status()
+    if not status["Raw patient dataset"] or not status["Inference checkpoint"]:
+        st.error(
+            "Prediction is unavailable because required inference artifacts are missing. "
+            "Add `data/raw/diabetic_data.csv` and a compatible trained checkpoint, "
+            "then reload the app."
+        )
+        st.info(
+            "This is an intentional guard: the dashboard will not silently use a different "
+            "checkpoint or fabricate a demo patient."
+        )
+        return
+    if not os.path.exists(P.PREFERRED_CHECKPOINT_PATH):
+        st.info(
+            "Using the available IID Adaptive Aggregation checkpoint. "
+            "The Phase 14 full HEALIX-FL checkpoint is not present in this checkout."
+        )
+    consent = st.checkbox(
+        "I confirm this is authorized research data and understand this output is not a diagnosis.",
+        key="prediction_consent",
+    )
+    if not consent:
+        st.info("A research-use acknowledgement is required before scoring.")
+        return
+
     columns, numeric_columns, _categorical = get_input_schema()
+    threshold = st.slider(
+        "Operating threshold",
+        min_value=0.10,
+        max_value=0.90,
+        value=float(st.session_state.get("prediction_threshold", P.THRESHOLD)),
+        step=0.05,
+        key="prediction_threshold",
+        help="Adjust the classification trade-off. The probability itself is unchanged.",
+    )
     defaults = get_demo_defaults()
     category_options = get_category_options()
     numeric_ranges = get_numeric_ranges()
@@ -570,7 +818,14 @@ def page_predict():
             with st.spinner(
                 "Running the existing HEALIX-FL preprocessing and model..."
             ):
-                prediction = P.predict_patient(patient_df)
+                prediction = run_prediction_with_threshold(patient_df, threshold)
+                record_audit_event(
+                    "single_prediction",
+                    mode="manual",
+                    row_count=1,
+                    threshold=threshold,
+                    model=os.path.basename(P.get_model_checkpoint_path()),
+                )
         except Exception as exc:  # noqa: BLE001 - surface pipeline errors in the UI
             st.error("Prediction failed: " + repr(exc))
             st.session_state["prediction"] = None
@@ -592,6 +847,103 @@ def page_predict():
             "No prediction yet - review the patient values and click "
             "*Predict Readmission*."
         )
+
+
+def page_batch():
+    st.title("Batch Scoring")
+    st.markdown(
+        "Score multiple raw patient rows with the saved preprocessing pipeline. "
+        "Rows must contain the same raw input columns used by Patient Prediction."
+    )
+    if not get_runtime_status()["Inference checkpoint"] or not os.path.exists(P.RAW_DATA_PATH):
+        st.error("Batch scoring requires the raw dataset and a compatible checkpoint.")
+        return
+    threshold = st.slider(
+        "Batch operating threshold",
+        0.10,
+        0.90,
+        float(P.THRESHOLD),
+        0.05,
+        key="batch_threshold",
+    )
+    consent = st.checkbox(
+        "I confirm this batch contains authorized research data and is not being used for clinical decisions.",
+        key="batch_consent",
+    )
+    if not consent:
+        st.info("A research-use acknowledgement is required before batch scoring.")
+        return
+    uploaded = st.file_uploader("Upload CSV", type=["csv"], key="batch_csv")
+    if uploaded is None:
+        st.info("Upload a CSV to begin. Download the dataset schema example below.")
+        schema = pd.DataFrame(columns=get_input_schema()[0])
+        st.download_button(
+            "Download input schema",
+            schema.to_csv(index=False),
+            "healix_fl_input_schema.csv",
+            "text/csv",
+        )
+        return
+    try:
+        batch_df = pd.read_csv(uploaded)
+        expected = get_input_schema()[0]
+        missing = [column for column in expected if column not in batch_df.columns]
+        if missing:
+            st.error("Missing required columns: " + ", ".join(missing))
+            return
+        predictions = run_prediction_with_threshold(batch_df[expected], threshold)
+        record_audit_event(
+            "batch_prediction",
+            mode="batch",
+            row_count=len(batch_df),
+            threshold=threshold,
+            model=os.path.basename(P.get_model_checkpoint_path()),
+        )
+        result_df = batch_df.copy()
+        result_df.insert(0, "risk_probability", np.asarray(predictions["probability"]))
+        result_df.insert(1, "risk_label", predictions["label"])
+        result_df.insert(2, "threshold", threshold)
+        st.success(f"Scored {len(result_df):,} patient rows.")
+        st.dataframe(
+            result_df[["risk_probability", "risk_label", "threshold"]],
+            hide_index=True,
+            use_container_width=True,
+        )
+        st.download_button(
+            "Download scored results",
+            result_df.to_csv(index=False),
+            "healix_fl_scored_patients.csv",
+            "text/csv",
+        )
+    except Exception as exc:  # surface validation and inference errors
+        st.error("Batch scoring failed: " + repr(exc))
+
+
+def page_operations():
+    st.title("Pilot Operations")
+    st.markdown(
+        "Operational controls for a restricted internal research pilot. "
+        "No raw patient values or prediction probabilities are written to the audit log."
+    )
+    status = get_pilot_status()
+    ready = [name for name, enabled in status.items() if enabled]
+    pending = [name for name, enabled in status.items() if not enabled]
+    metrics = st.columns(3)
+    metrics[0].metric("Configured controls", f"{len(ready)}/{len(status)}")
+    metrics[1].metric("External approvals pending", "2")
+    metrics[2].metric("Audit policy", "30-day purge")
+    st.subheader("Readiness checklist")
+    for name, enabled in status.items():
+        if enabled:
+            st.success(name + " — configured for demonstration")
+        else:
+            st.warning(name + " — deployment owner action required")
+    st.info(
+        "Demonstration-completion mode uses repository evaluation artifacts to show that the "
+        "validation and governance workflow is configured. It does not create clinical "
+        "validation, institutional approval, SSO/authentication, or HTTPS. The application "
+        "remains unsuitable for public or patient-care decisions."
+    )
 
 # ---------------------------------------------------------------------------
 # Page 3 - SHAP Explanation (uses the EXISTING explain_patient() only)
@@ -678,6 +1030,7 @@ def page_shap():
     st.subheader("Top 10 Contributing Features")
     st.dataframe(top_df, hide_index=True, use_container_width=True)
 
+    c1, c2 = st.columns(2)
     with c1:
         with st.container(border=True):
             st.markdown("**🟢 Positive Impact**")
@@ -1084,11 +1437,13 @@ def page_explainability():
 PAGE_FUNCTIONS = {
     PAGE_HOME: page_home,
     PAGE_PREDICT: page_predict,
+    PAGE_BATCH: page_batch,
     PAGE_SHAP: page_shap,
     PAGE_PERFORMANCE: page_performance,
     PAGE_HETEROGENEITY: page_heterogeneity,
     PAGE_ABLATION: page_ablation,
     PAGE_EXPLAINABILITY: page_explainability,
+    PAGE_OPERATIONS: page_operations,
 }
 
 
@@ -1102,4 +1457,3 @@ def main():
 
 
 main()
-

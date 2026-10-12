@@ -2,6 +2,7 @@ import yaml
 import os
 import sys
 import argparse
+import subprocess
 from src.data.audit import run_audit
 from src.data.preprocess import run_preprocessing
 from src.data.partition import run_phase3, run_phase4
@@ -10,6 +11,10 @@ from src.federated.local import run_phase6, run_phase6c
 from src.federated.fedavg import run_phase7
 from src.federated.fedprox import run_phase8
 from src.federated.personalized import run_phase9
+from src.federated.adaptive_aggregation import run_phase10
+from src.federated.differential_privacy import run_phase11
+from src.federated.phase14_ablation import run_ablation_study
+from src.evaluation.phase15_final_evaluation import run_phase15
 
 
 
@@ -194,9 +199,44 @@ def run_phase9_wrapper(config):
     print("=" * 60)
 
 
+def run_phase10_wrapper(config):
+    print("=" * 60)
+    print("HEALIX-FL: Phase 10 - Adaptive Aggregation")
+    print("=" * 60)
+    run_phase10(config)
 
 
-    
+def run_phase11_wrapper(config):
+    print("=" * 60)
+    print("HEALIX-FL: Phase 11 - Differential Privacy")
+    print("=" * 60)
+    run_phase11(config)
+
+
+def run_explainability_module(module_name, phase_name):
+    """Run a script-style explainability phase with the active interpreter."""
+    print("=" * 60)
+    print("HEALIX-FL: " + phase_name)
+    print("=" * 60)
+    subprocess.run(
+        [sys.executable, "-m", module_name],
+        check=True,
+    )
+
+
+def run_phase14_wrapper(config):
+    print("=" * 60)
+    print("HEALIX-FL: Phase 14 - Ablation Study")
+    print("=" * 60)
+    run_ablation_study(config)
+
+
+def run_phase15_wrapper(config):
+    del config
+    print("=" * 60)
+    print("HEALIX-FL: Phase 15 - Final Evaluation and Reproducibility")
+    print("=" * 60)
+    run_phase15()
 
 
 def main():
@@ -207,8 +247,8 @@ def main():
         "phase",
         nargs="?",
         default="5",
-        choices=["1", "2", "3", "4", "5", "6", "6c", "7", "8", "9"],
-        help="Phase to run: '1' for data audit, '2' for preprocessing, '3' for IID clients, '4' for non-IID clients, '5' for centralized baseline, '6' for IID local-only training, '6c' for non-IID local-only training, '7' for FedAvg, '8' for FedProx, '9' for personalized federated learning (default: 5)"
+        choices=["1", "2", "3", "4", "5", "6", "6c", "7", "8", "9", "10", "11", "12", "13", "14", "15"],
+        help="Phase to run: '1' audit, '2' preprocessing, '3' IID clients, '4' non-IID clients, '5' centralized baseline, '6' local-only, '6c' non-IID local-only, '7' FedAvg, '8' FedProx, '9' personalization, '10' adaptive aggregation, '11' differential privacy, '12' SHAP, '13' efficient SHAP, '14' ablation, '15' final evaluation (default: 5)"
     )
     parser.add_argument(
         "--config",
@@ -239,6 +279,18 @@ def main():
         run_phase8_wrapper(config)
     elif args.phase == "9":
         run_phase9_wrapper(config)
+    elif args.phase == "10":
+        run_phase10_wrapper(config)
+    elif args.phase == "11":
+        run_phase11_wrapper(config)
+    elif args.phase == "12":
+        run_explainability_module("src.explainability.shap_explainability", "Phase 12 - SHAP Explainability")
+    elif args.phase == "13":
+        run_explainability_module("src.explainability.phase13_efficient_shap", "Phase 13 - Efficient Explainability")
+    elif args.phase == "14":
+        run_phase14_wrapper(config)
+    elif args.phase == "15":
+        run_phase15_wrapper(config)
     
 
 

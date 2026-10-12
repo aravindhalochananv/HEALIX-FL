@@ -10,8 +10,10 @@ Artifacts used (read-only):
     - Transformed feature names    : data/processed/feature_names.csv
     - SHAP background sample       : data/processed/X_train.npy
     - Raw demonstration dataset    : data/raw/diabetic_data.csv
-    - Federated checkpoint (RAW state_dict):
+    - Preferred federated checkpoint (RAW state_dict):
           results/phase14_ablation/full_healix/iid/best_global_model.pt
+    - Compatible fallback checkpoint:
+          results/adaptive_aggregation/iid/best_global_model.pt
 
 Model (src.models.mlp.MLP, unchanged):
     2370 -> 128 -> ReLU -> Dropout(0.2)
@@ -57,8 +59,11 @@ PREPROCESSOR_PATH = os.path.join(PROJECT_ROOT, "data", "processed", "preprocesso
 FEATURE_NAMES_PATH = os.path.join(PROJECT_ROOT, "data", "processed", "feature_names.csv")
 X_TRAIN_PATH = os.path.join(PROJECT_ROOT, "data", "processed", "X_train.npy")
 RAW_DATA_PATH = os.path.join(PROJECT_ROOT, "data", "raw", "diabetic_data.csv")
-CHECKPOINT_PATH = os.path.join(
+PREFERRED_CHECKPOINT_PATH = os.path.join(
     PROJECT_ROOT, "results", "phase14_ablation", "full_healix", "iid", "best_global_model.pt"
+)
+FALLBACK_CHECKPOINT_PATH = os.path.join(
+    PROJECT_ROOT, "results", "adaptive_aggregation", "iid", "best_global_model.pt"
 )
 PREDICTION_RESULTS_DIR = os.path.join(PROJECT_ROOT, "results", "prediction")
 
@@ -82,6 +87,21 @@ TARGET_COLUMN = "readmitted"
 _preprocessor_cache = None
 _feature_names_cache = None
 _model_cache = None
+_model_checkpoint_path = None
+
+
+def get_model_checkpoint_path():
+    """Return the preferred checkpoint, or an explicit compatible fallback."""
+    if os.path.exists(PREFERRED_CHECKPOINT_PATH):
+        return PREFERRED_CHECKPOINT_PATH
+    if os.path.exists(FALLBACK_CHECKPOINT_PATH):
+        return FALLBACK_CHECKPOINT_PATH
+    raise FileNotFoundError(
+        "No compatible inference checkpoint found. Expected either: "
+        + PREFERRED_CHECKPOINT_PATH
+        + " or "
+        + FALLBACK_CHECKPOINT_PATH
+    )
 
 
 def load_preprocessor():
@@ -121,12 +141,11 @@ def build_model():
 
 def load_model():
     """Load the RAW PyTorch state_dict checkpoint into the project MLP."""
-    global _model_cache
+    global _model_cache, _model_checkpoint_path
     if _model_cache is None:
-        if not os.path.exists(CHECKPOINT_PATH):
-            raise FileNotFoundError("Checkpoint missing: " + CHECKPOINT_PATH)
+        checkpoint_path = get_model_checkpoint_path()
         model = build_model()
-        checkpoint = torch.load(CHECKPOINT_PATH, map_location="cpu", weights_only=False)
+        checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
         # The Phase 14 checkpoint is a RAW state_dict (no metadata dict).
         if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
             checkpoint = checkpoint["model_state_dict"]
@@ -140,6 +159,7 @@ def load_model():
                 + str(N_FEATURES)
             )
         _model_cache = model
+        _model_checkpoint_path = checkpoint_path
     return _model_cache
 
 
@@ -194,7 +214,7 @@ def transform_raw_patient(patient_dataframe):
     return X
 
 
-def predict_patient(patient_dataframe):
+def predict_patient(patient_dataframe, threshold=THRESHOLD):
     """Run inference on raw patient row(s).
 
     Pipeline: saved preprocessor -> MLP (logit) -> sigmoid -> threshold 0.5.
@@ -206,12 +226,14 @@ def predict_patient(patient_dataframe):
             label: "LOW RISK" or "HIGH RISK"
             logit: raw model logit
     """
+    if not 0.0 < threshold < 1.0:
+        raise ValueError("threshold must be between 0 and 1.")
     X = transform_raw_patient(patient_dataframe)
     model = load_model()
     with torch.no_grad():
         logits = model(torch.from_numpy(X)).numpy().flatten()
     probabilities = 1.0 / (1.0 + np.exp(-logits))
-    predictions = (probabilities >= THRESHOLD).astype(int)
+    predictions = (probabilities >= threshold).astype(int)
 
     if len(probabilities) == 1:
         pred = int(predictions[0])

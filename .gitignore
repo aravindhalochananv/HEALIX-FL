@@ -33,6 +33,7 @@ desktop.ini
 *.log
 *.tmp
 *.temp
+results/operations/audit.jsonl
 
 # Raw data - DO NOT commit to GitHub
 data/raw/

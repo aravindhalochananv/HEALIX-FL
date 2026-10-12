@@ -87,7 +87,7 @@ HEALIX-FL systematically investigates these challenges through controlled experi
 - Phase 14 — Ablation Study
 - Streamlit Prediction Dashboard (validated)
 
-**PLANNED:**
+**COMPLETED:**
 
 - Phase 15 — Final Evaluation and Reproducibility
 
@@ -332,6 +332,7 @@ PYTHON PROJECT/
 │   ├── shap/                              # Phase 12–13 SHAP results
 │   ├── phase14_ablation/                  # Phase 14 experiment outputs
 │   ├── phase14_analysis/                  # Phase 14 report CSVs and figures
+│   ├── phase15_final_evaluation/      # Final cross-model evaluation outputs
 │   ├── prediction/                        # dashboard SHAP plots
 │   ├── phase4_plots/
 │   ├── data_audit.csv
@@ -417,19 +418,72 @@ python main.py 8
 python main.py 9
 ```
 
-**Note:** Phases 10–11 are currently run as standalone modules (e.g., `python -m src.federated.adaptive_aggregation` and `python -m src.federated.differential_privacy`). Integration into `main.py` is planned.
+Phases 10–14 are also available through the same dispatcher:
+
+```bash
+# Phase 10: Adaptive aggregation
+python main.py 10
+
+# Phase 11: Differential privacy
+python main.py 11
+
+# Phase 12: SHAP explainability
+python main.py 12
+
+# Phase 13: Efficient SHAP explainability
+python main.py 13
+
+# Phase 14: Ablation study
+python main.py 14
+
+# Phase 15: Final evaluation and reproducibility
+python main.py 15
+```
+
+The original module entry points remain supported for direct execution. The
+dispatcher runs phases in the active Python environment and propagates any
+phase failure instead of reporting a false success.
 
 ---
 
 ## Streamlit Prediction Dashboard
 
-The validated dashboard in `dashboard/app.py` allows entering a patient's values manually and sending them through the EXISTING HEALIX-FL preprocessing pipeline and trained model. It produces:
+The dashboard in `dashboard/app.py` provides an internal research command center. It allows entering a patient's values manually and sending them through the EXISTING HEALIX-FL preprocessing pipeline and trained model when the inference artifacts are present. It produces:
 
 - a **model-predicted readmission probability** (displayed as a percentage),
 - a **LOW RISK / HIGH RISK classification** using the project threshold of 0.5,
 - a **local SHAP explanation** showing which features contributed to the prediction.
 
-The dashboard also displays the existing Phase 12, Phase 13 and Phase 14 research results. It does not retrain the model and does not re-run any experiment.
+The dashboard also displays the existing Phase 12, Phase 13 and Phase 14 research results. It supports configurable operating thresholds, batch CSV scoring, downloadable scored results, and input-schema downloads. It does not retrain the model and does not re-run any experiment.
+
+### Dashboard prerequisites
+
+Patient prediction requires the raw dataset and a compatible trained checkpoint. The raw dataset is intentionally excluded from Git, and generated checkpoints may be excluded from a checkout:
+
+- `data/raw/diabetic_data.csv`
+- `results/phase14_ablation/full_healix/iid/best_global_model.pt`
+
+If the exact Phase 14 checkpoint is unavailable but the IID Adaptive Aggregation checkpoint exists, the dashboard uses that compatible fallback and labels it in the UI. It never substitutes a different checkpoint silently. If no compatible checkpoint exists, research analytics remain usable while Patient Prediction reports the missing artifact.
+
+### Release posture
+
+- **Internal research users:** ready with fallback-model disclosure, threshold controls, batch scoring, and downloadable outputs.
+- **Controlled hospital research pilot:** ready for restricted, supervised use with research-use acknowledgement, non-identifying audit logging, configurable audit retention, operational readiness checks, and fallback-model disclosure. SSO/authentication and HTTPS are intentionally excluded from this repository and must be supplied by the deployment environment.
+- **Demonstration completion mode:** the dashboard presents the model-evaluation evidence and privacy/governance workflow as configured from repository artifacts. This is a demonstration package, not external clinical validation or institutional approval.
+- **Pilot governance still required for real deployment:** institutional privacy review, clinical governance approval, prospective clinical validation, and documented operating procedures remain required before any clinical workflow or patient-care use.
+- **Public or clinical decision-making:** not ready. This research application is not a medical device and must not be used to make patient-care decisions.
+
+### Controlled pilot safeguards
+
+The dashboard's **Pilot Operations** page reports the implemented operational controls. Prediction actions:
+
+- require an explicit research-use acknowledgement;
+- write only timestamp, event type, row count, threshold, model filename, session ID, and app version to the audit log;
+- never write raw patient fields, identifiers, or prediction probabilities to the audit log;
+- enforce a configurable audit retention period (30 days by default) through `HEALIX_AUDIT_RETENTION_DAYS`;
+- support an alternate audit destination through `HEALIX_AUDIT_LOG_PATH`.
+
+The default audit file is `results/operations/audit.jsonl`. Restrict filesystem access to authorized operators and include the file in the site's approved retention and backup policy.
 
 ```bash
 # Launch the dashboard
@@ -485,7 +539,7 @@ This is a research and academic framework. It is not intended for clinical diagn
 | 12 | SHAP Explainability | ✅ Completed |
 | 13 | Efficient Explainability | ✅ Completed |
 | 14 | Ablation Study | ✅ Completed |
-| 15 | Final Evaluation | 🔄 Planned |
+| 15 | Final Evaluation | ✅ Completed |
 | — | Streamlit Prediction Dashboard | ✅ Completed |
 
 ---
