@@ -2,7 +2,7 @@
   "phase": 15,
   "test_rows": 20354,
   "feature_count": 2370,
-  "models_evaluated": 5,
+  "models_evaluated": 6,
   "best_by_pr_auc": "centralized",
   "best_pr_auc": 0.2131041237204706,
   "best_roc_auc": 0.6626860248329459,

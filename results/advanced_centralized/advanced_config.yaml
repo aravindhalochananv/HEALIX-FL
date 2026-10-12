@@ -1,0 +1,15 @@
+config_output: results/advanced_centralized/advanced_config.yaml
+input_dim: 2370
+metrics_output: results/advanced_centralized/advanced_metrics.csv
+model:
+  dropout: 0.25
+  num_blocks: 3
+  type: advanced_residual_mlp
+  width: 256
+model_output: results/advanced_centralized/advanced_model.pt
+training:
+  batch_size: 256
+  epochs: 30
+  learning_rate: 0.0005
+  validation_split: 0.2
+  weight_decay: 0.0001
